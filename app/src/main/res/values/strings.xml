@@ -1,0 +1,55 @@
+<resources>
+    <string name="twitter_consumer_key">hlTZzOf9Ww9UwfFW4nObQQmTU</string>
+    <string name="twitter_consumer_secret">PTTXNYMYbLkRv8On2YEOKSiqUtyRvt2fDZlzfpW2NLa7uYGZDA</string>
+
+    <string name="instagram_client_id">f49bcb3f92a34eb784f6aef6c3e5790c</string>
+    <string name="instagram_client_secret">04116ce5f0a74d65a7ce9a96caa73b4c</string>
+
+    <string name="app_name">MySubs</string>
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+    <string name="nav_header_title">Android Studio</string>
+    <string name="nav_header_subtitle">android.studio@android.com</string>
+    <string name="nav_header_desc">Navigation header</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="menu_home">Home</string>
+    <string name="menu_gallery">Gallery</string>
+    <string name="menu_slideshow">Slideshow</string>
+    <string name="menu_tools">Tools</string>
+    <string name="menu_share">Share</string>
+    <string name="menu_send">Send</string>
+
+    <string name="subscriptions">Subscriptions</string>
+    <string name="add_subscription">Add subscription</string>
+
+    <string name="login">Login</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign In</string>
+    <string name="name">Name</string>
+
+    <string name="find_in_twitter">Find in Twitter</string>
+    <string name="find_in_instagram">Find in Instagram</string>
+    <string name="create_new_subscription">Create new subscription</string>
+
+    <string name="change_name">Change name</string>
+    <string name="change_password">Change password</string>
+    <string name="not_authorized">Not authorized</string>
+    <string name="privacy_policy">Privacy policy</string>
+
+    <string name="sign_up">Sign up</string>
+    <string name="email">Email</string>
+    <string name="repeat_password">Repeat password</string>
+    <string name="nickname">Nickname</string>
+    <string name="registration">Registration</string>
+
+    <string name="remember">Remember</string>
+
+    <string name="incorrect_email">Incorrect email</string>
+    <string name="incorrect_name">Incorrect name</string>
+    <string name="incorrect_password">Incorrect password</string>
+    <string name="incorrect_repeated_password">Incorrect repeated password</string>
+    <string name="not_the_same_passwords">Passwords are not the same</string>
+
+    <string name="facebook_app_id">2812953778721714</string>
+</resources>
