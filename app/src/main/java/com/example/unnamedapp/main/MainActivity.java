@@ -126,7 +126,12 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         list.add("ByHIeexFH6t");
         list.add("ByGZBRQh9bb");
         list.add("BxtHKDVFNti");
-        addInstagramList(list);
+        list.add("ByUTsLJlyB4");
+        list.add("ByLIkKaFKON");
+        list.add("ByHIeexFH6t");
+        list.add("ByGZBRQh9bb");
+        list.add("BxtHKDVFNti");
+        //addInstagramList(list);
     }
 
     public void addTwitterIdList(ArrayList<Long> idList){
@@ -189,6 +194,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         addSubscriptions();
         recyclerViewWall.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerViewWall.setAdapter(mWallAdapter);
+
         //addEvents();
         mImageViewTwitterIcon = navigationView.findViewById(R.id.imageViewTwitterIcon);
         mImageViewInstagramIcon = navigationView.findViewById(R.id.imageViewInstagramIcon);

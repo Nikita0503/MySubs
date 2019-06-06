@@ -15,6 +15,7 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.TweetUtils;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -90,7 +91,23 @@ public class MainPresenter implements BaseContract.BasePresenter {
                     @Override
                     public void onSuccess(ResponseBody value) {
                         try {
+                            ArrayList<String> shortCodes = new ArrayList<String>();
                             JSONObject object = new JSONObject(value.string());
+                            JSONObject objectData = object.getJSONObject("data");
+
+                            JSONObject objectUser = objectData.getJSONObject("user");
+                            JSONObject objectMedia = objectUser.getJSONObject("edge_owner_to_timeline_media");
+                            JSONArray arrayEdges = objectMedia.getJSONArray("edges");
+
+                            for(int i = 0; i < arrayEdges.length(); i++){
+                                JSONObject itemNode = arrayEdges.getJSONObject(i);
+                                JSONObject objectNode = itemNode.getJSONObject("node");
+                                String shortcode = objectNode.getString("shortcode");
+                                Log.d("INSTAGRAM", shortcode);
+                                shortCodes.add(shortcode);
+                                //Log.d("INSTAGRAM_CODE", objectNode.getString("shortcode"));
+                            }
+                            mActivity.addInstagramList(shortCodes);
                             //Log.d("INSTAGRAM", object.toString(4));
                         } catch (Exception e) {
                             e.printStackTrace();

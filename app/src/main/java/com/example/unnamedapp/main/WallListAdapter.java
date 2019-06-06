@@ -66,6 +66,7 @@ public class WallListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, final int i) {
         final InstagramViewHolder holder = (InstagramViewHolder) viewHolder;
         final WebView webView = new WebView(mActivity);
+
         webView.getSettings().setJavaScriptEnabled(true);
         webView.loadUrl("https://www.instagram.com/p/"+mInstagramList.get(i)+"/");
         webView.setWebViewClient(new WebViewClient() {
@@ -79,12 +80,14 @@ public class WallListAdapter extends RecyclerView.Adapter {
                     mActivity.startActivity(intent);
 
                 }
+                webView.setVisibility(View.VISIBLE);
                 webView.loadUrl ("javascript: (function () {" +
                                 "var dots = document. getElementsByClassName ('MEAGs') [0] .style.display = 'none';" +
                         "var head = document. getElementsByClassName ('gW4DF') [0] .style.display = 'none';" +
                                 "var head = document. getElementsByClassName ('KGiwt') [0] .style.display = 'none';" +
 
                         "}) ()");
+
                 holder.itemView.setVisibility(View.VISIBLE);
                 Log.d("INSTAGRAM", view.getUrl());
                 Log.d("INSTAGRAM", "height1 = " + view.getContentHeight());
@@ -119,6 +122,11 @@ public class WallListAdapter extends RecyclerView.Adapter {
     @Override
     public int getItemViewType(int position) {
         return position;
+    }
+
+    @Override
+    public long getItemId(int pos){
+        return pos;
     }
 
 
