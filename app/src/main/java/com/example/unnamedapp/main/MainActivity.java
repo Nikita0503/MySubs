@@ -77,8 +77,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     private MainPresenter mPresenter;
     private SubscriptionsListAdapter mAdapter;
     private WallListAdapter mWallAdapter;
-    @BindView(R.id.webView)
-    WebView webView;
+
     @BindView(R.id.recyclerViewWall)
     RecyclerView recyclerViewWall;
     @BindView(R.id.toolbar)
@@ -121,11 +120,21 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         setContentView(R.layout.activity_main);
         mPresenter = new MainPresenter(this);
         initViews();
-        show();
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("ByUTsLJlyB4");
+        list.add("ByLIkKaFKON");
+        list.add("ByHIeexFH6t");
+        list.add("ByGZBRQh9bb");
+        list.add("BxtHKDVFNti");
+        addInstagramList(list);
     }
 
     public void addTwitterIdList(ArrayList<Long> idList){
-        mWallAdapter.addList(idList);
+        //mWallAdapter.addList(idList);
+    }
+
+    public void addInstagramList(ArrayList<String> list){
+        mWallAdapter.addInstagramList(list);
     }
 
     void show(){
@@ -140,25 +149,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     public void initViews() {
         ButterKnife.bind(this);
 
-        webView.getSettings().setJavaScriptEnabled(true);
-        webView.loadUrl("https://www.instagram.com/p/ByLIkKaFKON/");
-        webView.setWebViewClient(new WebViewClient() {
 
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                if(!url.startsWith("https://www.instagram.com/p/")){
-                    view.goBack();
-                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
-                    intent.setPackage("com.instagram.android");
-                    startActivity(intent);
-                }
-                Log.d("INSTAGRAM", view.getUrl());
-                Log.d("INSTAGRAM", "height1 = " + view.getContentHeight());
-                // Set the height of the webview to view.getContentHeight() here?
-                webView.setLayoutParams(new ConstraintLayout.LayoutParams(getResources().getDisplayMetrics().widthPixels, (int) (view.getContentHeight() * getResources().getDisplayMetrics().density)));
-                //webView.getSettings().setJavaScriptEnabled(false);
-            }
-        });
 
         //Log.d("INSTAGRAM", "height2 = " + webView.getContentHeight());
         setSupportActionBar(toolbar);

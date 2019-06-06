@@ -91,4 +91,6 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
             layout = (ConstraintLayout) itemView.findViewById(R.id.item_twitter);
         }
     }
+
+
 }
