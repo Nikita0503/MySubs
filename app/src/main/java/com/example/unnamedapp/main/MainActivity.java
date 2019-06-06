@@ -1,8 +1,12 @@
 package com.example.unnamedapp.main;
 
+import android.annotation.TargetApi;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.graphics.Rect;
+import android.net.Uri;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
@@ -19,8 +23,13 @@ import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebResourceRequest;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.example.unnamedapp.BaseContract;
@@ -68,6 +77,8 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     private MainPresenter mPresenter;
     private SubscriptionsListAdapter mAdapter;
     private WallListAdapter mWallAdapter;
+    @BindView(R.id.webView)
+    WebView webView;
     @BindView(R.id.recyclerViewWall)
     RecyclerView recyclerViewWall;
     @BindView(R.id.toolbar)
@@ -89,6 +100,14 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         Intent intent = new Intent(MainActivity.this, AccountSettingsActivity.class);
         intent.putExtra("userdata", new UserData("Pudge", "https://res.cloudinary.com/teepublic/image/private/s--6liaugi7--/t_Preview/b_rgb:6e2229,c_limit,f_jpg,h_630,q_90,w_630/v1513129027/production/designs/2171617_1.jpg"));
         startActivity(intent);
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        mPresenter.onStart();
+        mPresenter.checkIsSignedIn();
+        mPresenter.fetchTwitterPostsIds("JohnCena");
     }
 
     @Override
@@ -115,17 +134,33 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         //URL url = new URL(urlString);
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        mPresenter.onStart();
-        mPresenter.checkIsSignedIn();
-        mPresenter.fetchTwitterPostsIds("JohnCena");
-    }
+
 
     @Override
     public void initViews() {
         ButterKnife.bind(this);
+
+        webView.getSettings().setJavaScriptEnabled(true);
+        webView.loadUrl("https://www.instagram.com/p/ByLIkKaFKON/");
+        webView.setWebViewClient(new WebViewClient() {
+
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                if(!url.startsWith("https://www.instagram.com/p/")){
+                    view.goBack();
+                    Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(url));
+                    intent.setPackage("com.instagram.android");
+                    startActivity(intent);
+                }
+                Log.d("INSTAGRAM", view.getUrl());
+                Log.d("INSTAGRAM", "height1 = " + view.getContentHeight());
+                // Set the height of the webview to view.getContentHeight() here?
+                webView.setLayoutParams(new ConstraintLayout.LayoutParams(getResources().getDisplayMetrics().widthPixels, (int) (view.getContentHeight() * getResources().getDisplayMetrics().density)));
+                //webView.getSettings().setJavaScriptEnabled(false);
+            }
+        });
+
+        //Log.d("INSTAGRAM", "height2 = " + webView.getContentHeight());
         setSupportActionBar(toolbar);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override

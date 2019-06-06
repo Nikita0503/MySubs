@@ -91,7 +91,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
                     public void onSuccess(ResponseBody value) {
                         try {
                             JSONObject object = new JSONObject(value.string());
-                            Log.d("INSTAGRAM", object.toString(4));
+                            //Log.d("INSTAGRAM", object.toString(4));
                         } catch (Exception e) {
                             e.printStackTrace();
                         }
