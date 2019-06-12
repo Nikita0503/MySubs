@@ -36,6 +36,7 @@ import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.account_settings.AccountSettingsActivity;
 import com.example.unnamedapp.model.AvatarTransformation;
+import com.example.unnamedapp.model.data.PostData;
 import com.example.unnamedapp.model.data.SubscriptionData;
 import com.example.unnamedapp.model.data.UserData;
 import com.example.unnamedapp.new_subscription.NewSubscriptionActivity;
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         mPresenter.onStart();
         mPresenter.checkIsSignedIn();
         mPresenter.fetchTwitterPostsIds("JohnCena");
+        mPresenter.fetchInstagramPosts("232192182");
     }
 
     @Override
@@ -120,28 +122,31 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         setContentView(R.layout.activity_main);
         mPresenter = new MainPresenter(this);
         initViews();
-        ArrayList<String> list = new ArrayList<String>();
-        list.add("ByUTsLJlyB4");
-        list.add("ByLIkKaFKON");
-        list.add("ByHIeexFH6t");
-        list.add("ByGZBRQh9bb");
-        list.add("BxtHKDVFNti");
-        list.add("ByUTsLJlyB4");
-        list.add("ByLIkKaFKON");
-        list.add("ByHIeexFH6t");
-        list.add("ByGZBRQh9bb");
-        list.add("BxtHKDVFNti");
+        //ArrayList<String> list = new ArrayList<String>();
+        //list.add("ByUTsLJlyB4");
+        //list.add("ByLIkKaFKON");
+        //list.add("ByHIeexFH6t");
+        //list.add("ByGZBRQh9bb");
+        //list.add("BxtHKDVFNti");
+        //list.add("ByUTsLJlyB4");
+        //list.add("ByLIkKaFKON");
+        //list.add("ByHIeexFH6t");
+        //list.add("ByGZBRQh9bb");
+        //list.add("BxtHKDVFNti");
         //addInstagramList(list);
     }
 
-    public void addTwitterIdList(ArrayList<Long> idList){
-        //mWallAdapter.addList(idList);
-    }
+    //public void addTwitterIdList(ArrayList<Long> idList){
+    //    mWallAdapter.addList(idList);
+    //}
 
-    public void addInstagramList(ArrayList<String> list){
-        mWallAdapter.addInstagramList(list);
-    }
+    //public void addInstagramList(ArrayList<String> list){
+    //    mWallAdapter.addInstagramList(list);
+    //}
 
+    public void addPosts(ArrayList<PostData> posts){
+        mWallAdapter.addPosts(posts);
+    }
     void show(){
         //String urlString= "www.instagram.com/users/"+""+
         //        "/media/recent/?access_token=" + {Маркер доступа};
@@ -187,6 +192,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         setUser(new UserData("Pudge", "https://gamepedia.cursecdn.com/dota2_gamepedia/c/c0/Pudge_icon.png"));
         mAdapter = new SubscriptionsListAdapter(getApplicationContext(), this);
         mWallAdapter = new WallListAdapter(this);
+        mWallAdapter.setHasStableIds(true);
         mRecyclerViewSideMenu = navigationView.findViewById(R.id.recyclerViewSubscriptions);
         mRecyclerViewSideMenu.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerViewSideMenu.setAdapter(mAdapter);

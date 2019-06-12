@@ -28,7 +28,7 @@ public interface APIService {
     @POST("user/login/")
     Single<ResponseFromApi> login(@Body LoginData data);
 
-    @GET("graphql/query/?query_id=17888483320059182&first=4")
+    @GET("graphql/query/?query_id=17888483320059182&first=8")
     Single<ResponseBody> getInstagramPosts(@Query("id") String id);
 
     @GET("rockstar05031998/?__a=1")

@@ -88,7 +88,7 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
             super(itemView);
             textViewName = (TextView) itemView.findViewById(R.id.textViewSubscriptionName);
             imageViewAvatar = (ImageView) itemView.findViewById(R.id.imageViewSubscriptionAvatar);
-            layout = (ConstraintLayout) itemView.findViewById(R.id.item_twitter);
+            layout = (ConstraintLayout) itemView.findViewById(R.id.item_post);
         }
     }
 

@@ -41,36 +41,7 @@ public class APIUtils {
         return apiService.login(data);
     }
 
-    public Single<ArrayList<Long>> fetchTwitterPostsIds(final String link){
-        return Single.create(new SingleOnSubscribe<ArrayList<Long>>() {
-            @Override
-            public void subscribe(SingleEmitter<ArrayList<Long>> e) throws Exception {
-                ConfigurationBuilder builder = new ConfigurationBuilder();
-                builder.setOAuthConsumerKey("hlTZzOf9Ww9UwfFW4nObQQmTU");
-                builder.setOAuthConsumerSecret("PTTXNYMYbLkRv8On2YEOKSiqUtyRvt2fDZlzfpW2NLa7uYGZDA");
-                builder.setOAuthAccessToken("1127907113504788480-g5fUUlqcx4X77PLMcLxaDr41R471yJ");
-                builder.setOAuthAccessTokenSecret("RU18Uh4R5OnniImY806u2MGPdmB08mRD3LGw8n7HnIK8h");
-                Configuration configuration = builder.build();
-                TwitterFactory factory = new TwitterFactory(configuration);
-                twitter4j.Twitter twitter = factory.getInstance();
-                Paging page = new Paging();
-                //page.setPage(2);
 
-                ArrayList<Long> longs = new ArrayList<Long>();
-                List<Status> statuses = new ArrayList<Status>();
-                try {
-                    statuses = twitter.getUserTimeline(link, page);
-                    for(int i = 0; i < statuses.size(); i++) {
-                        Log.d("Twitter", "title is : " + statuses.get(i).getId());
-                        longs.add(statuses.get(i).getId());
-                    }
-                } catch (TwitterException ex) {
-                    ex.printStackTrace();
-                }
-                e.onSuccess(longs);
-            }
-        });
-    }
 
 
     public static Retrofit getClient(String baseUrl) {
