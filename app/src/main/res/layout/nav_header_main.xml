@@ -58,5 +58,16 @@
         android:visibility="gone"
         app:srcCompat="@drawable/ic_instagram" />
 
+    <ImageView
+        android:id="@+id/imageViewYouTubeIcon"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintBottom_toTopOf="@+id/textViewName"
+        app:layout_constraintEnd_toStartOf="@+id/imageViewInstagramIcon"
+        android:visibility="gone"
+        app:srcCompat="@drawable/ic_youtube" />
+
 
 </android.support.constraint.ConstraintLayout>

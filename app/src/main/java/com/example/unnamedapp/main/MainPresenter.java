@@ -41,6 +41,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
 
     private boolean mDowloadedInstagram;
     private boolean mDowloadedTwitter;
+    private String mYouTubeToken;
     private String mInstagramToken;
     private String mTwitterToken;
     private ArrayList<PostData> mPosts;
@@ -70,6 +71,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
                 Context.MODE_PRIVATE);
         mInstagramToken = sp.getString("InstagramToken", "");
         mTwitterToken = sp.getString("TwitterToken", "");
+        mYouTubeToken = sp.getString("YouTubeToken", "");
         if(!mInstagramToken.equals("")){
             mActivity.showInstagramIcon();
             Log.d("INSTAGRAM", mInstagramToken);
@@ -77,6 +79,10 @@ public class MainPresenter implements BaseContract.BasePresenter {
         }
         if(!mTwitterToken.equals("")){
             mActivity.showTwitterIcon();
+        }
+        if(!mYouTubeToken.equals("")){
+            Log.d("YOUTUBE_TOKEN", mYouTubeToken);
+            mActivity.showYouTubeIcon();
         }
     }
 

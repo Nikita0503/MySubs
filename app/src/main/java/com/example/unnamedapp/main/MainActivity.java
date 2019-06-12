@@ -93,6 +93,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     private ImageView mImageViewUser;
     private ImageView mImageViewTwitterIcon;
     private ImageView mImageViewInstagramIcon;
+    private ImageView mImageViewYouTubeIcon;
     private Button mButtonNewSubscription;
     private TextView mTextViewUserName;
     @OnClick(R.id.header)
@@ -204,6 +205,11 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         //addEvents();
         mImageViewTwitterIcon = navigationView.findViewById(R.id.imageViewTwitterIcon);
         mImageViewInstagramIcon = navigationView.findViewById(R.id.imageViewInstagramIcon);
+        mImageViewYouTubeIcon = navigationView.findViewById(R.id.imageViewYouTubeIcon);
+    }
+
+    public void showYouTubeIcon(){
+        mImageViewYouTubeIcon.setVisibility(View.VISIBLE);
     }
 
     public void showTwitterIcon(){

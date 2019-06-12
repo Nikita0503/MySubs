@@ -15,6 +15,10 @@ import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.AvatarTransformation;
 import com.example.unnamedapp.model.data.UserData;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.squareup.picasso.Picasso;
 
 import butterknife.BindView;
@@ -31,12 +35,16 @@ public class AccountSettingsActivity extends AppCompatActivity implements BaseCo
     ImageView imageViewTwitterUserAvatar;
     @BindView(R.id.imageViewInstagramUserAvatar)
     ImageView imageViewInstagramUserAvatar;
+    @BindView(R.id.imageViewYouTubeUserAvatar)
+    ImageView imageViewYouTubeUserAvatar;
     @BindView(R.id.textViewUsername)
     TextView textViewUsername;
     @BindView(R.id.textViewIsAuthTwitter)
     TextView textViewIsAuthTwitter;
     @BindView(R.id.textViewIsAuthInstagram)
     TextView textViewIsAuthInstagram;
+    @BindView(R.id.textViewIsAuthYouTube)
+    TextView textViewIsAuthYouTube;
     @OnClick(R.id.imageViewTwitter)
     void onClickTwitter(){
         mPresenter.twitterLogin();
@@ -44,6 +52,10 @@ public class AccountSettingsActivity extends AppCompatActivity implements BaseCo
     @OnClick(R.id.imageViewInstagram)
     void onClickInstagram(){
         mPresenter.instagramLogin();
+    }
+    @OnClick(R.id.imageViewYouTube)
+    void onClickYouTube(){
+        mPresenter.youTubeLogin();
     }
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -70,6 +82,20 @@ public class AccountSettingsActivity extends AppCompatActivity implements BaseCo
         Picasso.with(getApplicationContext())
                 .load(userData.avatar)
                 .into(imageViewAvatar);
+    }
+
+    public void showYouTubeUser(UserData userData){
+        textViewIsAuthYouTube.setVisibility(View.VISIBLE);
+        if(userData != null) {
+            textViewIsAuthYouTube.setText(userData.name);
+            imageViewYouTubeUserAvatar.setVisibility(View.VISIBLE);
+            Picasso.with(getApplicationContext())
+                    .load(userData.avatar)
+                    .transform(new AvatarTransformation())
+                    .into(imageViewYouTubeUserAvatar);
+        }else{
+            textViewIsAuthYouTube.setText(getResources().getString(R.string.not_authorized));
+        }
     }
 
     public void showTwitterUser(UserData userData){
@@ -102,11 +128,16 @@ public class AccountSettingsActivity extends AppCompatActivity implements BaseCo
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 5){
+            mPresenter.fetchYouTubeUserData(data);
+        }
         if (requestCode == 140) {
             mPresenter.twitterAuthClient.onActivityResult(requestCode, resultCode, data);
         }
         super.onActivityResult(requestCode, resultCode, data);
     }
+
+
     @Override
     public void onStop(){
         super.onStop();

@@ -2,6 +2,7 @@ package com.example.unnamedapp.account_settings;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
 
@@ -11,6 +12,12 @@ import com.example.unnamedapp.model.APIUtils.APIInstagramUtils;
 import com.example.unnamedapp.model.data.UserData;
 import com.example.unnamedapp.model.data.instagram.InstagramData;
 import com.example.unnamedapp.model.data.instagram.InstagramUserdata;
+import com.google.android.gms.auth.api.signin.GoogleSignIn;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
+import com.google.android.gms.auth.api.signin.GoogleSignInClient;
+import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.common.api.ApiException;
+import com.google.android.gms.tasks.Task;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Result;
@@ -33,6 +40,7 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
 
     private UserData mUserdata;
     public TwitterAuthClient twitterAuthClient;
+    public GoogleSignInClient googleSignInClient;
     public APIInstagramUtils mAPIInstagramUtils;
     private CompositeDisposable mDisposable;
     private AccountSettingsActivity mActivity;
@@ -44,6 +52,7 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
     @Override
     public void onStart() {
         mDisposable = new CompositeDisposable();
+        youTubeInit();
         twitterInit();
         instagramInit();
     }
@@ -54,6 +63,42 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
 
     public void setUserdata(UserData userdata) {
         mUserdata = userdata;
+    }
+
+    public void youTubeInit(){
+        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(mActivity);
+        if(account != null){
+            mActivity.showYouTubeUser(new UserData(account.getDisplayName(), String.valueOf(account.getPhotoUrl())));
+        }else{
+            mActivity.showYouTubeUser(null);
+        }
+    }
+
+    public void youTubeLogin(){
+        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestEmail()
+                .build();
+        googleSignInClient = GoogleSignIn.getClient(mActivity, gso);
+        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(mActivity);
+        Intent signInIntent = googleSignInClient.getSignInIntent();
+        mActivity.startActivityForResult(signInIntent, 5);
+    }
+
+    public void fetchYouTubeUserData(Intent data) {
+        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
+        try {
+            GoogleSignInAccount account = task.getResult(ApiException.class);
+            Log.d("YOUTUBE", account.getDisplayName());
+            Log.d("YOUTUBE", String.valueOf(account.getPhotoUrl()));
+            SharedPreferences activityPreferences = mActivity.getSharedPreferences("UnnamedApplication", Activity.MODE_PRIVATE);
+            SharedPreferences.Editor editor = activityPreferences.edit();
+            Log.d("YOUTUBE", "exist");
+            editor.putString("YouTubeToken", "exist");
+            editor.commit();
+            mActivity.showYouTubeUser(new UserData(account.getDisplayName(), String.valueOf(account.getPhotoUrl())));
+        } catch (ApiException e) {
+            Log.w("YOUTUBE", "signInResult:failed code=" + e.getStatusCode());
+        }
     }
 
     private void twitterInit(){
