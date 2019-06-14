@@ -8,8 +8,12 @@ import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.model.APIUtils.APIInstagramUtils;
 import com.example.unnamedapp.model.APIUtils.APITwitterUtils;
 import com.example.unnamedapp.model.APIUtils.APIUtils;
+import com.example.unnamedapp.model.APIUtils.APIYouTubeUtils;
 import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.PostData;
+import com.example.unnamedapp.model.data.UserData;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.ExponentialBackOff;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
@@ -24,6 +28,7 @@ import org.json.JSONObject;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -48,6 +53,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
     private APIUtils mApiUtils;
     private APIInstagramUtils mApiInstagramUtils;
     private APITwitterUtils mApiTwitterUtils;
+    private APIYouTubeUtils mApiYouTubeUtils;
     private CompositeDisposable mDisposable;
     private MainActivity mActivity;
 
@@ -56,6 +62,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
         mApiUtils = new APIUtils();
         mApiInstagramUtils = new APIInstagramUtils();
         mApiTwitterUtils = new APITwitterUtils();
+        mApiYouTubeUtils = new APIYouTubeUtils();
         mPosts = new ArrayList<PostData>();
         mDowloadedInstagram = false;
         mDowloadedTwitter = false;
@@ -83,7 +90,36 @@ public class MainPresenter implements BaseContract.BasePresenter {
         if(!mYouTubeToken.equals("")){
             Log.d("YOUTUBE_TOKEN", mYouTubeToken);
             mActivity.showYouTubeIcon();
+            fetchYouTubePostsIds();
         }
+    }
+
+    public void fetchYouTubePostsIds(){
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String youtubeToken = sp.getString("YouTubeToken", "");
+        GoogleAccountCredential mCredential = GoogleAccountCredential.usingOAuth2(
+                mActivity.getApplicationContext(), Arrays.asList(Constants.SCOPES))
+                .setBackOff(new ExponentialBackOff());
+        if(!youtubeToken.equals("")){
+            mCredential.setSelectedAccountName(youtubeToken);
+        }
+        mApiYouTubeUtils.setCredential(mCredential);
+        Disposable twitterPostsIds = mApiYouTubeUtils.getPopularVideos
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<String>() {
+                    @Override
+                    public void onSuccess(String statuses) {
+                        Log.d("YOUTUBE_TEST", statuses);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
+        mDisposable.add(twitterPostsIds);
     }
 
     public void fetchTwitterPostsIds(String link){

@@ -28,8 +28,8 @@ public class APIYouTubeUtils {
 
     private GoogleAccountCredential mCredential;
 
-    public APIYouTubeUtils(GoogleAccountCredential mCredential) {
-        this.mCredential = mCredential;
+    public void setCredential(GoogleAccountCredential credential){
+        mCredential = credential;
     }
 
     public Single<String> getPopularVideos = Single.create(new SingleOnSubscribe<String>() {

@@ -1,5 +1,7 @@
 package com.example.unnamedapp.account_settings;
 
+import android.Manifest;
+import android.accounts.AccountManager;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
@@ -10,6 +12,7 @@ import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.APIUtils.APIInstagramUtils;
 import com.example.unnamedapp.model.APIUtils.APIYouTubeUtils;
+import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.UserData;
 import com.example.unnamedapp.model.data.instagram.InstagramData;
 import com.example.unnamedapp.model.data.instagram.InstagramUserdata;
@@ -41,12 +44,13 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import pub.devrel.easypermissions.EasyPermissions;
 
 public class AccountSettingsPresenter implements BaseContract.BasePresenter {
 
     private UserData mUserdata;
+    public GoogleAccountCredential mCredential;
     public TwitterAuthClient twitterAuthClient;
-    public GoogleSignInClient googleSignInClient;
     public APIInstagramUtils mAPIInstagramUtils;
     private CompositeDisposable mDisposable;
     private AccountSettingsActivity mActivity;
@@ -72,59 +76,43 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
     }
 
     public void youTubeInit(){
-        GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(mActivity);
-        if(account != null){
-            mActivity.showYouTubeUser(new UserData(account.getDisplayName(), String.valueOf(account.getPhotoUrl())));
+        mCredential = GoogleAccountCredential.usingOAuth2(
+                mActivity.getApplicationContext(), Arrays.asList(Constants.SCOPES))
+                .setBackOff(new ExponentialBackOff());
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String youtubeToken = sp.getString("YouTubeToken", "");
+        if(!youtubeToken.equals("")){
+            mActivity.showYouTubeUser(new UserData(youtubeToken, null));
+            mCredential.setSelectedAccountName(youtubeToken);
         }else{
             mActivity.showYouTubeUser(null);
         }
+        mActivity.dos(mCredential);
     }
 
     public void youTubeLogin(){
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestEmail()
-                .build();
-        googleSignInClient = GoogleSignIn.getClient(mActivity, gso);
-        //GoogleSignInAccount account = GoogleSignIn.getLastSignedInAccount(mActivity);
-        Intent signInIntent = googleSignInClient.getSignInIntent();
-        mActivity.startActivityForResult(signInIntent, 5);
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String accountName = sp.getString("YouTubeToken", "");
+        if (!accountName.equals("")) {
+            mCredential.setSelectedAccountName(accountName);
+            mActivity.showYouTubeUser(new UserData(mCredential.getSelectedAccountName(), null));
+        } else {
+            mActivity.startActivityForResult(mCredential.newChooseAccountIntent(), Constants.REQUEST_ACCOUNT_PICKER);
+        }
     }
 
     public void fetchYouTubeUserData(Intent data) {
-        Task<GoogleSignInAccount> task = GoogleSignIn.getSignedInAccountFromIntent(data);
-        try {
-            GoogleSignInAccount account = task.getResult(ApiException.class);
-            Log.d("YOUTUBE", account.getDisplayName());
-            Log.d("YOUTUBE", String.valueOf(account.getPhotoUrl()));
-            SharedPreferences activityPreferences = mActivity.getSharedPreferences("UnnamedApplication", Activity.MODE_PRIVATE);
-            SharedPreferences.Editor editor = activityPreferences.edit();
-            Log.d("YOUTUBE", "exist");
-            editor.putString("YouTubeToken", "exist");
-            editor.commit();
-            mActivity.showYouTubeUser(new UserData(account.getDisplayName(), String.valueOf(account.getPhotoUrl())));
-            GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
-                    mActivity.getApplicationContext(), Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
-                    .setBackOff(new ExponentialBackOff());
-            credential.setSelectedAccount(account.getAccount());
-            APIYouTubeUtils apiYouTubeUtils = new APIYouTubeUtils(credential);
-            Disposable instagramUserdata = apiYouTubeUtils.getPopularVideos
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
-                    .subscribeWith(new DisposableSingleObserver<String>() {
-                        @Override
-                        public void onSuccess(String value) {
-                            Log.d("YOUTUBE", value);
-                        }
-
-                        @Override
-                        public void onError(Throwable e) {
-                            e.printStackTrace();
-                        }
-                    });
-            mDisposable.add(instagramUserdata);
-        } catch (ApiException e) {
-            Log.w("YOUTUBE", "signInResult:failed code=" + e.getStatusCode());
-        }
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String accountName = data.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        SharedPreferences.Editor editor = sp.edit();
+        editor.putString("YouTubeToken", accountName);
+        editor.commit();
+        mCredential.setSelectedAccountName(accountName);
+        mActivity.showYouTubeUser(new UserData(mCredential.getSelectedAccountName(), null));
+        mActivity.dos(mCredential);
     }
 
     private void twitterInit(){

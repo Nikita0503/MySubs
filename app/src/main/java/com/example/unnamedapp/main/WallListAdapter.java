@@ -12,10 +12,15 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
+import android.widget.Button;
 
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.PostData;
+import com.google.android.youtube.player.YouTubeInitializationResult;
+import com.google.android.youtube.player.YouTubePlayer;
+import com.google.android.youtube.player.YouTubePlayerSupportFragment;
+import com.google.android.youtube.player.YouTubePlayerView;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -24,9 +29,10 @@ import com.twitter.sdk.android.tweetui.TweetUtils;
 import com.twitter.sdk.android.tweetui.TweetView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 public class WallListAdapter extends RecyclerView.Adapter {
-
+    YouTubePlayer player;
     private MainActivity mActivity;
     private Context mContext;
     //private ArrayList<Long> mList;
@@ -118,6 +124,30 @@ public class WallListAdapter extends RecyclerView.Adapter {
                     exception.printStackTrace();
                 }
             });
+        }
+        if(mPosts.get(i).socialWebId == Constants.YOUTUBE_ID){
+            YouTubePlayerView videoView = new YouTubePlayerView(mActivity);
+
+            videoView.initialize("1012252393464-62h0hpktcc77hvn0rk90pqsr046joesk.apps.googleusercontent.com", new YouTubePlayer.OnInitializedListener() {
+                        @Override
+                        public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                            //youTubePlayer.setShowFullscreenButton(false);
+                            //youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
+                            //youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
+                            youTubePlayer.loadVideo("snB_DruoebM");
+                            player = youTubePlayer;
+                        }
+
+
+                        @Override
+                        public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                            Log.d("ERROR", "123");
+                        }
+
+                    }
+            );
+            holder.layout.addView(videoView);
+
         }
     }
 

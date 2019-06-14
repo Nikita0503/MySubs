@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -40,6 +41,7 @@ import com.example.unnamedapp.model.data.PostData;
 import com.example.unnamedapp.model.data.SubscriptionData;
 import com.example.unnamedapp.model.data.UserData;
 import com.example.unnamedapp.new_subscription.NewSubscriptionActivity;
+import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.DefaultLogger;
@@ -73,7 +75,7 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
-public class MainActivity extends AppCompatActivity implements BaseContract.BaseView {
+public class MainActivity extends YouTubeBaseActivity implements BaseContract.BaseView {
 
     private MainPresenter mPresenter;
     private SubscriptionsListAdapter mAdapter;
@@ -163,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
 
 
         //Log.d("INSTAGRAM", "height2 = " + webView.getContentHeight());
-        setSupportActionBar(toolbar);
+        //setSupportActionBar(toolbar);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -193,7 +195,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         setUser(new UserData("Pudge", "https://gamepedia.cursecdn.com/dota2_gamepedia/c/c0/Pudge_icon.png"));
         mAdapter = new SubscriptionsListAdapter(getApplicationContext(), this);
         mWallAdapter = new WallListAdapter(this);
-        mWallAdapter.setHasStableIds(true);
+        mWallAdapter.setHasStableIds(false);
         mRecyclerViewSideMenu = navigationView.findViewById(R.id.recyclerViewSubscriptions);
         mRecyclerViewSideMenu.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerViewSideMenu.setAdapter(mAdapter);
@@ -201,7 +203,6 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         addSubscriptions();
         recyclerViewWall.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerViewWall.setAdapter(mWallAdapter);
-
         //addEvents();
         mImageViewTwitterIcon = navigationView.findViewById(R.id.imageViewTwitterIcon);
         mImageViewInstagramIcon = navigationView.findViewById(R.id.imageViewInstagramIcon);
