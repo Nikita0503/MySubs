@@ -9,6 +9,7 @@ import android.util.Log;
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.APIUtils.APIInstagramUtils;
+import com.example.unnamedapp.model.APIUtils.APIYouTubeUtils;
 import com.example.unnamedapp.model.data.UserData;
 import com.example.unnamedapp.model.data.instagram.InstagramData;
 import com.example.unnamedapp.model.data.instagram.InstagramUserdata;
@@ -18,6 +19,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.tasks.Task;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.ExponentialBackOff;
+import com.google.api.services.youtube.YouTubeScopes;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Result;
@@ -29,6 +33,8 @@ import com.twitter.sdk.android.core.TwitterException;
 import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.identity.TwitterAuthClient;
 import com.twitter.sdk.android.core.models.User;
+
+import java.util.Arrays;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -96,6 +102,26 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
             editor.putString("YouTubeToken", "exist");
             editor.commit();
             mActivity.showYouTubeUser(new UserData(account.getDisplayName(), String.valueOf(account.getPhotoUrl())));
+            GoogleAccountCredential credential = GoogleAccountCredential.usingOAuth2(
+                    mActivity.getApplicationContext(), Arrays.asList(YouTubeScopes.YOUTUBE_READONLY))
+                    .setBackOff(new ExponentialBackOff());
+            credential.setSelectedAccount(account.getAccount());
+            APIYouTubeUtils apiYouTubeUtils = new APIYouTubeUtils(credential);
+            Disposable instagramUserdata = apiYouTubeUtils.getPopularVideos
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableSingleObserver<String>() {
+                        @Override
+                        public void onSuccess(String value) {
+                            Log.d("YOUTUBE", value);
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+            mDisposable.add(instagramUserdata);
         } catch (ApiException e) {
             Log.w("YOUTUBE", "signInResult:failed code=" + e.getStatusCode());
         }
