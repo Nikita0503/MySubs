@@ -126,26 +126,31 @@ public class WallListAdapter extends RecyclerView.Adapter {
             });
         }
         if(mPosts.get(i).socialWebId == Constants.YOUTUBE_ID){
-            YouTubePlayerView videoView = new YouTubePlayerView(mActivity);
+            final YouTubePlayerView videoView = new YouTubePlayerView(mActivity);
+            videoView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    videoView.initialize("1012252393464-62h0hpktcc77hvn0rk90pqsr046joesk.apps.googleusercontent.com", new YouTubePlayer.OnInitializedListener() {
+                                @Override
+                                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+                                    //youTubePlayer.setShowFullscreenButton(false);
+                                    //youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
+                                    //youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
+                                    youTubePlayer.cueVideo(mPosts.get(i).postId);
 
-            videoView.initialize("1012252393464-62h0hpktcc77hvn0rk90pqsr046joesk.apps.googleusercontent.com", new YouTubePlayer.OnInitializedListener() {
-                        @Override
-                        public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                            //youTubePlayer.setShowFullscreenButton(false);
-                            //youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
-                            //youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
-                            youTubePlayer.loadVideo("snB_DruoebM");
-                            player = youTubePlayer;
-                        }
+                                    Log.d("YOUTUBE_INIT", mPosts.get(i).postId);
+                                    player = youTubePlayer;
+                                }
 
+                                @Override
+                                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+                                    Log.d("ERROR", "123");
+                                }
 
-                        @Override
-                        public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                            Log.d("ERROR", "123");
-                        }
-
-                    }
-            );
+                            }
+                    );
+                }
+            });
             holder.layout.addView(videoView);
 
         }

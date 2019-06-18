@@ -29,6 +29,7 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -44,8 +45,9 @@ import twitter4j.TwitterException;
 
 public class MainPresenter implements BaseContract.BasePresenter {
 
-    private boolean mDowloadedInstagram;
-    private boolean mDowloadedTwitter;
+    private boolean mDownloadedYouTube;
+    private boolean mDownloadedInstagram;
+    private boolean mDownloadedTwitter;
     private String mYouTubeToken;
     private String mInstagramToken;
     private String mTwitterToken;
@@ -64,8 +66,9 @@ public class MainPresenter implements BaseContract.BasePresenter {
         mApiTwitterUtils = new APITwitterUtils();
         mApiYouTubeUtils = new APIYouTubeUtils();
         mPosts = new ArrayList<PostData>();
-        mDowloadedInstagram = false;
-        mDowloadedTwitter = false;
+        mDownloadedYouTube = false;
+        mDownloadedInstagram = false;
+        mDownloadedTwitter = false;
     }
 
     @Override
@@ -105,21 +108,27 @@ public class MainPresenter implements BaseContract.BasePresenter {
             mCredential.setSelectedAccountName(youtubeToken);
         }
         mApiYouTubeUtils.setCredential(mCredential);
-        Disposable twitterPostsIds = mApiYouTubeUtils.getPopularVideos
+        Log.d("YOUTUBE_DATA", mCredential.getSelectedAccountName());
+        Disposable youTubePostsIds = mApiYouTubeUtils.getPopularVideos
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<String>() {
+                .subscribeWith(new DisposableSingleObserver<ArrayList<PostData>>() {
                     @Override
-                    public void onSuccess(String statuses) {
-                        Log.d("YOUTUBE_TEST", statuses);
+                    public void onSuccess(ArrayList<PostData> videos) {
+                        for(int i = 0; i < videos.size(); i++){
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+                            Log.d("YOUTUBE_DATA", videos.get(i).postId);
+                        }
+                        mDownloadedYouTube = true;
+                        mPosts.addAll(videos);
+                        sortPosts();
                     }
-
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
                     }
                 });
-        mDisposable.add(twitterPostsIds);
+        mDisposable.add(youTubePostsIds);
     }
 
     public void fetchTwitterPostsIds(String link){
@@ -132,7 +141,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
                         for(int i = 0; i < statuses.size(); i++) {
                             Log.d("Twitter", "title is : " + statuses.get(i).getId());
                             mPosts.add(new PostData(Constants.TWITTER_ID, String.valueOf(statuses.get(i).getId()), statuses.get(i).getCreatedAt()));
-                            mDowloadedTwitter = true;
+                            mDownloadedTwitter = true;
                         }
                         sortPosts();
                     }
@@ -165,7 +174,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
                                 long takeAnTimestamp = objectNode.getLong("taken_at_timestamp");
                                 Log.d("INSTAGRAM", shortcode);
                                 mPosts.add(new PostData(Constants.INSTAGRAM_ID, shortcode, new Date(takeAnTimestamp*1000)));
-                                mDowloadedInstagram = true;
+                                mDownloadedInstagram = true;
                                 //Log.d("INSTAGRAM_CODE", objectNode.getString("shortcode"));
                             }
                             sortPosts();
@@ -185,7 +194,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
     }
 
     private void sortPosts(){
-        if(mDowloadedTwitter && mDowloadedInstagram){
+        if(mDownloadedTwitter && mDownloadedInstagram && mDownloadedYouTube){
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             selectionSort();
             for(int i = 0; i < mPosts.size(); i++) {
@@ -222,6 +231,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
                 mPosts.set(min_i, tmp);
             }
         }
+        Collections.reverse(mPosts);
     }
 
     @Override
