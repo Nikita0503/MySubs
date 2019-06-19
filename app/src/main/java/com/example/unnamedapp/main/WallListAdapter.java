@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.Constants;
@@ -20,7 +21,9 @@ import com.example.unnamedapp.model.data.PostData;
 import com.google.android.youtube.player.YouTubeInitializationResult;
 import com.google.android.youtube.player.YouTubePlayer;
 import com.google.android.youtube.player.YouTubePlayerSupportFragment;
-import com.google.android.youtube.player.YouTubePlayerView;
+import com.pierfrancescosoffritti.youtubeplayer.player.AbstractYouTubePlayerListener;
+import com.pierfrancescosoffritti.youtubeplayer.player.YouTubePlayerInitListener;
+import com.pierfrancescosoffritti.youtubeplayer.player.YouTubePlayerView;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.TwitterException;
@@ -51,9 +54,9 @@ public class WallListAdapter extends RecyclerView.Adapter {
         mPosts.addAll(ids);
         notifyDataSetChanged();
         Log.d("SORT", "count = " + mPosts.size());
-        for(int i = 0; i < mPosts.size(); i++){
-            Log.d("SORT", mPosts.get(i).postId);
-        }
+        //for(int i = 0; i < mPosts.size(); i++){
+        //    Log.d("SORT", mPosts.get(i).postId);
+        //}
     }
 
    //public void addInstagramList(ArrayList<String> list){
@@ -74,7 +77,6 @@ public class WallListAdapter extends RecyclerView.Adapter {
         View view = inflater.inflate(R.layout.post_item, viewGroup, false);
         return new WallListAdapter.ViewHolder(view);
     }
-
 
 
     @Override
@@ -126,34 +128,46 @@ public class WallListAdapter extends RecyclerView.Adapter {
             });
         }
         if(mPosts.get(i).socialWebId == Constants.YOUTUBE_ID){
-            final YouTubePlayerView videoView = new YouTubePlayerView(mActivity);
-            videoView.setOnClickListener(new View.OnClickListener() {
+            //final YouTubePlayerView videoView = new YouTubePlayerView(mActivity);
+            //
+            //videoView.setOnClickListener(new View.OnClickListener() {
+            //    @Override
+            //    public void onClick(View v) {
+            //        videoView.initialize("1012252393464-62h0hpktcc77hvn0rk90pqsr046joesk.apps.googleusercontent.com", new YouTubePlayer.OnInitializedListener() {
+            //                    @Override
+            //                    public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
+            //                        youTubePlayer.setPlayerStyle(YouTubePlayer.PlayerStyle.MINIMAL);
+            //                        youTubePlayer.loadVideo(mPosts.get(i).postId);
+            //                        youTubePlayer.play();
+            //                        //videoplayer=youTubePlayer;
+            //                    }
+            //
+            //                    @Override
+            //                    public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
+            //                        Log.d("ERROR", "123");
+            //                    }
+            //
+            //                }
+            //        );
+            //    }
+            //});
+            //holder.layout.addView(videoView);
+            YouTubePlayerView youTubePlayerView =  new YouTubePlayerView(mActivity);
+            youTubePlayerView.initialize(new YouTubePlayerInitListener() {
                 @Override
-                public void onClick(View v) {
-                    videoView.initialize("1012252393464-62h0hpktcc77hvn0rk90pqsr046joesk.apps.googleusercontent.com", new YouTubePlayer.OnInitializedListener() {
-                                @Override
-                                public void onInitializationSuccess(YouTubePlayer.Provider provider, YouTubePlayer youTubePlayer, boolean b) {
-                                    //youTubePlayer.setShowFullscreenButton(false);
-                                    //youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_CONTROL_ORIENTATION);
-                                    //youTubePlayer.addFullscreenControlFlag(YouTubePlayer.FULLSCREEN_FLAG_ALWAYS_FULLSCREEN_IN_LANDSCAPE);
-                                    youTubePlayer.cueVideo(mPosts.get(i).postId);
-
-                                    Log.d("YOUTUBE_INIT", mPosts.get(i).postId);
-                                    player = youTubePlayer;
-                                }
-
-                                @Override
-                                public void onInitializationFailure(YouTubePlayer.Provider provider, YouTubeInitializationResult youTubeInitializationResult) {
-                                    Log.d("ERROR", "123");
-                                }
-
-                            }
-                    );
+                public void onInitSuccess(final com.pierfrancescosoffritti.youtubeplayer.player.YouTubePlayer initializedYouTubePlayer) {
+                    initializedYouTubePlayer.addListener(new AbstractYouTubePlayerListener() {
+                        @Override
+                        public void onReady() {
+                            String videoId = mPosts.get(i).postId;
+                            initializedYouTubePlayer.cueVideo(videoId, 0);
+                        }
+                    });
                 }
-            });
-            holder.layout.addView(videoView);
-
+            }, true);
+            holder.layout.addView(youTubePlayerView);
         }
+
     }
 
     @Override
@@ -178,5 +192,6 @@ public class WallListAdapter extends RecyclerView.Adapter {
             layout = (ConstraintLayout) itemView.findViewById(R.id.item_post);
         }
     }
+
 
 }

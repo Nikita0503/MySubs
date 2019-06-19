@@ -57,7 +57,7 @@ public class APIYouTubeUtils {
                     .build();
             String uploadId = null;
             ChannelListResponse result = mService.channels().list("contentDetails")
-                    .setId("UCnbxcA3kZ_uUYIBHNvxpDQw")
+                    .setForUsername("PewDiePie")
                     .setFields("items/contentDetails/relatedPlaylists/uploads")
                     .execute();
             List<Channel> channels = result.getItems();
@@ -70,7 +70,7 @@ public class APIYouTubeUtils {
             PlaylistItemListResponse response = mService.playlistItems()
                     .list("snippet,contentDetails")
                     .setPlaylistId(uploadId)
-                    .setMaxResults(1L)
+                    .setMaxResults(10L)
                     .execute();
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
             List<PlaylistItem> allVideos = response.getItems();
@@ -78,7 +78,8 @@ public class APIYouTubeUtils {
                 PlaylistItem item = allVideos.get(i);
                 Log.d("YOUTUBE_DATA",  item.getSnippet().getPublishedAt().toString());
                 Date date = dateFormat.parse(item.getSnippet().getPublishedAt().toString());
-                postList.add(new PostData(Constants.YOUTUBE_ID, item.getSnippet().getResourceId().getVideoId(), date));
+                PostData postData = new PostData(Constants.YOUTUBE_ID, item.getSnippet().getResourceId().getVideoId(), date);
+                postList.add(postData);
             }
             e.onSuccess(postList);
         }
