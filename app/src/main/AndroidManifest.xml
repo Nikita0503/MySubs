@@ -14,8 +14,13 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme"
         android:usesCleartextTraffic="true">
-        <meta-data android:name="com.facebook.sdk.ApplicationId" android:value="@string/facebook_app_id"/>
-        <activity android:name=".choose_twitter.ChooseTwitterActivity"></activity>
+        <activity android:name=".choose_youtube.ChooseYouTubeActivity"></activity>
+
+        <meta-data
+            android:name="com.facebook.sdk.ApplicationId"
+            android:value="@string/facebook_app_id" />
+
+        <activity android:name=".choose_twitter.ChooseTwitterActivity" />
         <activity android:name=".choose_instagram.ChooseInstagramActivity" />
         <activity android:name=".registration.RegistrationActivity" />
         <activity android:name=".account_settings.AccountSettingsActivity" />

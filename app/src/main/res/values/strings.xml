@@ -30,6 +30,7 @@
 
     <string name="find_in_twitter">Find in Twitter</string>
     <string name="find_in_instagram">Find in Instagram</string>
+    <string name="find_in_youtube">Find in YouTube</string>
     <string name="create_new_subscription">Create new subscription</string>
 
     <string name="change_name">Change name</string>

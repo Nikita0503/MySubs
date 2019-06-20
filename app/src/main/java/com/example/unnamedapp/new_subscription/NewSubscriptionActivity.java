@@ -5,11 +5,11 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.ImageView;
 
-import com.bumptech.glide.Glide;
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.choose_instagram.ChooseInstagramActivity;
 import com.example.unnamedapp.choose_twitter.ChooseTwitterActivity;
+import com.example.unnamedapp.choose_youtube.ChooseYouTubeActivity;
 import com.example.unnamedapp.model.AvatarTransformation;
 import com.squareup.picasso.Picasso;
 
@@ -28,9 +28,15 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
         startActivity(intent);
     }
 
-    @OnClick(R.id.buttonTiwtter)
+    @OnClick(R.id.buttonTwitter)
     void onClickTwitter(){
         Intent intent = new Intent(this, ChooseTwitterActivity.class);
+        startActivity(intent);
+    }
+
+    @OnClick(R.id.buttonYouTube)
+    void onClickYouTube(){
+        Intent intent = new Intent(this, ChooseYouTubeActivity.class);
         startActivity(intent);
     }
 
