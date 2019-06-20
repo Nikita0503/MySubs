@@ -123,49 +123,21 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
                 .build();
         Twitter.initialize(config);
         setContentView(R.layout.activity_main);
-        mPresenter = new MainPresenter(this);
+        Intent intent = getIntent();
+        String token = intent.getStringExtra("token");
+        mPresenter = new MainPresenter(this, token);
         initViews();
-        //ArrayList<String> list = new ArrayList<String>();
-        //list.add("ByUTsLJlyB4");
-        //list.add("ByLIkKaFKON");
-        //list.add("ByHIeexFH6t");
-        //list.add("ByGZBRQh9bb");
-        //list.add("BxtHKDVFNti");
-        //list.add("ByUTsLJlyB4");
-        //list.add("ByLIkKaFKON");
-        //list.add("ByHIeexFH6t");
-        //list.add("ByGZBRQh9bb");
-        //list.add("BxtHKDVFNti");
-        //addInstagramList(list);
     }
 
-    //public void addTwitterIdList(ArrayList<Long> idList){
-    //    mWallAdapter.addList(idList);
-    //}
-
-    //public void addInstagramList(ArrayList<String> list){
-    //    mWallAdapter.addInstagramList(list);
-    //}
 
     public void addPosts(ArrayList<PostData> posts){
         mWallAdapter.addPosts(posts);
     }
-    void show(){
-        //String urlString= "www.instagram.com/users/"+""+
-        //        "/media/recent/?access_token=" + {Маркер доступа};
-        //URL url = new URL(urlString);
-    }
-
 
 
     @Override
     public void initViews() {
         ButterKnife.bind(this);
-
-
-
-        //Log.d("INSTAGRAM", "height2 = " + webView.getContentHeight());
-        //setSupportActionBar(toolbar);
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -200,13 +172,13 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         mRecyclerViewSideMenu.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerViewSideMenu.setAdapter(mAdapter);
         mRecyclerViewSideMenu.addItemDecoration(new SpacesItemDecoration(10));
-        addSubscriptions();
+        //addSubscriptions();
         recyclerViewWall.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerViewWall.setAdapter(mWallAdapter);
-        //addEvents();
         mImageViewTwitterIcon = navigationView.findViewById(R.id.imageViewTwitterIcon);
         mImageViewInstagramIcon = navigationView.findViewById(R.id.imageViewInstagramIcon);
         mImageViewYouTubeIcon = navigationView.findViewById(R.id.imageViewYouTubeIcon);
+        mPresenter.fetchSubscriptions();
     }
 
     public void showYouTubeIcon(){
@@ -236,21 +208,23 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
 
 
 
-    public void addSubscriptions(){
-        ArrayList<SubscriptionData> list = new ArrayList<SubscriptionData>();
-        list.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));
-        list.add(new SubscriptionData("Tinker", "https://gamepedia.cursecdn.com/dota2_gamepedia/d/d1/Tinker_icon.png"));
-        list.add(new SubscriptionData("Shadow Fiend", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/36/Shadow_Fiend_icon.png"));
-        list.add(new SubscriptionData("Windranger", "https://gamepedia.cursecdn.com/dota2_gamepedia/6/60/Windranger_icon.png"));
-        list.add(new SubscriptionData("Lina", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/35/Lina_icon.png"));
-        list.add(new SubscriptionData("Luna" ,"https://gamepedia.cursecdn.com/dota2_gamepedia/7/7d/Luna_icon.png"));//❤
-        list.add(new SubscriptionData("Dazzle", "https://gamepedia.cursecdn.com/dota2_gamepedia/e/e6/Dazzle_icon.png"));
-        list.add(new SubscriptionData("Ogre Magi", "https://gamepedia.cursecdn.com/dota2_gamepedia/e/e0/Ogre_Magi_icon.png"));
-        list.add(new SubscriptionData("Zeus", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/3f/Zeus_icon.png"));
-        list.add(new SubscriptionData("Slark", "https://gamepedia.cursecdn.com/dota2_gamepedia/a/aa/Slark_icon.png"));
-        list.add(new SubscriptionData("Venomancer", "https://gamepedia.cursecdn.com/dota2_gamepedia/2/25/Venomancer_icon.png"));
-        list.add(new SubscriptionData("Phoenix", "https://gamepedia.cursecdn.com/dota2_gamepedia/1/14/Phoenix_icon.png"));
-        mAdapter.addSubscriptions(list);
+    public void addSubscriptions(ArrayList<SubscriptionData> subs){
+        subs.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));
+        mAdapter.addSubscriptions(subs);
+        //ArrayList<SubscriptionData> list = new ArrayList<SubscriptionData>();
+        //list.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));
+        //list.add(new SubscriptionData("Tinker", "https://gamepedia.cursecdn.com/dota2_gamepedia/d/d1/Tinker_icon.png"));
+        //list.add(new SubscriptionData("Shadow Fiend", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/36/Shadow_Fiend_icon.png"));
+        //list.add(new SubscriptionData("Windranger", "https://gamepedia.cursecdn.com/dota2_gamepedia/6/60/Windranger_icon.png"));
+        //list.add(new SubscriptionData("Lina", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/35/Lina_icon.png"));
+        //list.add(new SubscriptionData("Luna" ,"https://gamepedia.cursecdn.com/dota2_gamepedia/7/7d/Luna_icon.png"));//❤
+        //list.add(new SubscriptionData("Dazzle", "https://gamepedia.cursecdn.com/dota2_gamepedia/e/e6/Dazzle_icon.png"));
+        //list.add(new SubscriptionData("Ogre Magi", "https://gamepedia.cursecdn.com/dota2_gamepedia/e/e0/Ogre_Magi_icon.png"));
+        //list.add(new SubscriptionData("Zeus", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/3f/Zeus_icon.png"));
+        //list.add(new SubscriptionData("Slark", "https://gamepedia.cursecdn.com/dota2_gamepedia/a/aa/Slark_icon.png"));
+        //list.add(new SubscriptionData("Venomancer", "https://gamepedia.cursecdn.com/dota2_gamepedia/2/25/Venomancer_icon.png"));
+        //list.add(new SubscriptionData("Phoenix", "https://gamepedia.cursecdn.com/dota2_gamepedia/1/14/Phoenix_icon.png"));
+        //mAdapter.addSubscriptions(list);
     }
 
     @Override

@@ -47,7 +47,7 @@ public class AuthorizationActivity extends AppCompatActivity implements BaseCont
         setContentView(R.layout.activity_authorization);
         initViews();
         mPresenter = new AuthorizationPresenter(this);
-        openMainActivity("12");
+        //openMainActivity("12");
 
     }
 
@@ -58,6 +58,7 @@ public class AuthorizationActivity extends AppCompatActivity implements BaseCont
 
     public void openMainActivity(String token){
         Intent intent = new Intent(this, MainActivity.class);
+        intent.putExtra("token", token);
         startActivity(intent);
     }
 

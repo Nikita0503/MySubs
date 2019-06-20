@@ -11,6 +11,7 @@ import com.example.unnamedapp.model.APIUtils.APIUtils;
 import com.example.unnamedapp.model.APIUtils.APIYouTubeUtils;
 import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.PostData;
+import com.example.unnamedapp.model.data.SubscriptionData;
 import com.example.unnamedapp.model.data.UserData;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.util.ExponentialBackOff;
@@ -59,9 +60,10 @@ public class MainPresenter implements BaseContract.BasePresenter {
     private CompositeDisposable mDisposable;
     private MainActivity mActivity;
 
-    public MainPresenter(MainActivity activity) {
+    public MainPresenter(MainActivity activity, String token) {
         mActivity = activity;
         mApiUtils = new APIUtils();
+        mApiUtils.setToken(token);
         mApiInstagramUtils = new APIInstagramUtils();
         mApiTwitterUtils = new APITwitterUtils();
         mApiYouTubeUtils = new APIYouTubeUtils();
@@ -95,6 +97,23 @@ public class MainPresenter implements BaseContract.BasePresenter {
             mActivity.showYouTubeIcon();
             fetchYouTubePostsIds();
         }
+    }
+
+    public void fetchSubscriptions(){
+        Disposable subs = mApiUtils.getSubscriptions()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<ArrayList<SubscriptionData>>() {
+                    @Override
+                    public void onSuccess(ArrayList<SubscriptionData> value) {
+                        mActivity.addSubscriptions(value);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     public void fetchYouTubePostsIds(){

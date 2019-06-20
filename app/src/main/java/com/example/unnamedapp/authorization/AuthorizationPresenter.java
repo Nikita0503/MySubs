@@ -6,9 +6,7 @@ import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.APIUtils.APIUtils;
 import com.example.unnamedapp.model.data.LoginData;
-import com.example.unnamedapp.model.data.ResponseFromApi;
-
-import org.json.JSONObject;
+import com.example.unnamedapp.model.data.AuthData;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -48,20 +46,20 @@ public class AuthorizationPresenter implements BaseContract.BasePresenter {
         Disposable token = mApiUtils.authorization(data)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableSingleObserver<ResponseFromApi>() {
+                .subscribeWith(new DisposableSingleObserver<AuthData>() {
                     @Override
-                    public void onSuccess(ResponseFromApi token) {
+                    public void onSuccess(AuthData authData) {
                         //Log.d("VALUE", token);
                         //mActivity.openMainActivity(token);
                         mActivity.showMessage("success");
                         try {
-                            Log.d("VALUE", token.name);
-                            Log.d("VALUE", token.token);
-                            Log.d("VALUE", token.email);
+                            Log.d("VALUE", authData.name);
+                            Log.d("VALUE", authData.token);
+                            Log.d("VALUE", authData.email);
                         } catch (Exception c){
                             c.printStackTrace();
                         }
-                        mActivity.openMainActivity("token");
+                        mActivity.openMainActivity(authData.token);
                     }
 
                     @Override

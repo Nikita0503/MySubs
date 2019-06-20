@@ -27,11 +27,6 @@ public class APIInstagramUtils {
         return apiService.getInstagramPosts(userId);
     }
 
-    public Single<ResponseBody> getInstagramPosts2(){
-        Retrofit retrofit = getClient("https://www.instagram.com/");
-        APIService apiService = retrofit.create(APIService.class);
-        return apiService.getInstagramPosts2();
-    }
 
     public static Retrofit getClient(String baseUrl) {
         Retrofit retrofit = new Retrofit.Builder()
