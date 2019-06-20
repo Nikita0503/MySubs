@@ -1,7 +1,10 @@
 package com.example.unnamedapp.choose_youtube;
 
+import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -21,7 +24,19 @@ public class ChooseYouTubeActivity extends AppCompatActivity implements BaseCont
 
     @OnClick(R.id.buttonRemember)
     void onClickRemember(){
-        Toast.makeText(getApplicationContext(), webViewYouTube.getOriginalUrl(), Toast.LENGTH_SHORT).show();
+        try {
+            Log.d("SPLIT", webViewYouTube.getOriginalUrl());
+            String name = webViewYouTube.getOriginalUrl().split("https://m.youtube.com/")[1];
+            Log.d("SPLIT", name);
+            Intent intent = new Intent();
+            intent.putExtra("user", name);
+            setResult(RESULT_OK, intent);
+            finish();
+        }catch (Exception c){
+            c.printStackTrace();
+            setResult(RESULT_CANCELED);
+            finish();
+        }
     }
 
     @Override
@@ -56,5 +71,8 @@ public class ChooseYouTubeActivity extends AppCompatActivity implements BaseCont
         ButterKnife.bind(this);
     }
 
-
+    @Override
+    public void showMessage(String message){
+        Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
+    }
 }

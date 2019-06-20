@@ -46,6 +46,7 @@ import twitter4j.TwitterException;
 
 public class MainPresenter implements BaseContract.BasePresenter {
 
+    public String token;
     private boolean mDownloadedYouTube;
     private boolean mDownloadedInstagram;
     private boolean mDownloadedTwitter;
@@ -61,6 +62,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
     private MainActivity mActivity;
 
     public MainPresenter(MainActivity activity, String token) {
+        this.token = token;
         mActivity = activity;
         mApiUtils = new APIUtils();
         mApiUtils.setToken(token);
@@ -95,7 +97,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
         if(!mYouTubeToken.equals("")){
             Log.d("YOUTUBE_TOKEN", mYouTubeToken);
             mActivity.showYouTubeIcon();
-            fetchYouTubePostsIds();
+            //fetchYouTubePostsIds();
         }
     }
 
@@ -114,9 +116,10 @@ public class MainPresenter implements BaseContract.BasePresenter {
                         e.printStackTrace();
                     }
                 });
+        mDisposable.add(subs);
     }
 
-    public void fetchYouTubePostsIds(){
+    public void fetchYouTubePostsIds(String channelData){
         SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
                 Context.MODE_PRIVATE);
         String youtubeToken = sp.getString("YouTubeToken", "");
@@ -126,7 +129,14 @@ public class MainPresenter implements BaseContract.BasePresenter {
         if(!youtubeToken.equals("")){
             mCredential.setSelectedAccountName(youtubeToken);
         }
+        String channel = channelData.split("/")[1];
         mApiYouTubeUtils.setCredential(mCredential);
+        if(channelData.split("/")[0].equals("user")) {
+            mApiYouTubeUtils.setChannel(channel, APIYouTubeUtils.CHANNEL_NAME);
+        }
+        if(channelData.split("/")[0].equals("channel")){
+            mApiYouTubeUtils.setChannel(channel, APIYouTubeUtils.CHANNEL_ID);
+        }
         Log.d("YOUTUBE_DATA", mCredential.getSelectedAccountName());
         Disposable youTubePostsIds = mApiYouTubeUtils.getPopularVideos
                 .subscribeOn(Schedulers.io())

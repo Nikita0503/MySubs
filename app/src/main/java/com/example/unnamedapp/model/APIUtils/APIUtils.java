@@ -1,5 +1,7 @@
 package com.example.unnamedapp.model.APIUtils;
 
+import android.util.Log;
+
 import com.example.unnamedapp.model.APIService;
 import com.example.unnamedapp.model.data.LoginData;
 import com.example.unnamedapp.model.data.RegistrationData;
@@ -11,6 +13,8 @@ import java.util.ArrayList;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
@@ -38,6 +42,23 @@ public class APIUtils {
         Retrofit retrofit = getClient(BASE_URL);
         APIService apiService = retrofit.create(APIService.class);
         return apiService.getSubscriptions("token " + mToken);
+    }
+
+    public Completable sendNewSubscription(SubscriptionData subscriptionData){
+        Retrofit retrofit = getClient(BASE_URL);
+        APIService apiService = retrofit.create(APIService.class);
+        return apiService.sendNewSubscription("token " + mToken, subscriptionData);
+    }
+
+    public Completable sendNewSubscription2(SubscriptionData subscriptionData){
+        Retrofit retrofit = getClient(BASE_URL);
+        APIService apiService = retrofit.create(APIService.class);
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.name);
+        RequestBody instagramId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.instagram_id);
+        RequestBody twitterId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.twitter_id);
+        RequestBody youtubeId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.youtube_id);
+        Log.d("token", mToken);
+        return apiService.sendNewSubscription2("token " + mToken, name, instagramId, twitterId, youtubeId);
     }
 
     public static Retrofit getClient(String baseUrl) {

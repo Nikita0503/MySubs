@@ -62,6 +62,7 @@ public class AuthorizationActivity extends AppCompatActivity implements BaseCont
         startActivity(intent);
     }
 
+    @Override
     public void showMessage(String message){
         Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
     }

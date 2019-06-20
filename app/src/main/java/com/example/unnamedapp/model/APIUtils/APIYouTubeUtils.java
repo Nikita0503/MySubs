@@ -33,11 +33,15 @@ import io.reactivex.SingleOnSubscribe;
 
 public class APIYouTubeUtils {
 
-    private String mChannelId;
+    public static final int CHANNEL_ID = 0;
+    public static final int CHANNEL_NAME = 1;
+    private int mType;
+    private String mChannel;
     private GoogleAccountCredential mCredential;
 
-    public void setChannelId(String channelId){
-        mChannelId = channelId;
+    public void setChannel(String channel, int type){
+        mChannel = channel;
+        mType = type;
     }
 
     public void setCredential(GoogleAccountCredential credential){
@@ -56,10 +60,21 @@ public class APIYouTubeUtils {
                     .setApplicationName("MySubs")
                     .build();
             String uploadId = null;
-            ChannelListResponse result = mService.channels().list("contentDetails")
-                    .setForUsername("PewDiePie")
-                    .setFields("items/contentDetails/relatedPlaylists/uploads")
-                    .execute();
+            ChannelListResponse result = null;
+            if(mType == CHANNEL_ID){
+                 result = mService.channels().list("contentDetails")
+                        .setFields("items/contentDetails/relatedPlaylists/uploads")
+                        .setId(mChannel)
+                        .execute();
+            }
+            if(mType == CHANNEL_NAME){
+                 result = mService.channels().list("contentDetails")
+                        .setFields("items/contentDetails/relatedPlaylists/uploads")
+                        .setForUsername(mChannel)
+                        .execute();
+            }
+
+            Log.d("YOUTUBE_NAME", mType + " " + mChannel);
             List<Channel> channels = result.getItems();
             if (channels != null) {
                 Channel channel = channels.get(0);

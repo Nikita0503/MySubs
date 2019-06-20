@@ -2,9 +2,9 @@ package com.example.unnamedapp.model.data;
 
 public class SubscriptionData {
     public int id;
-    public int instagram_id;
-    public int twitter_id;
-    public int youtube_id;
+    public String instagram_id;
+    public String twitter_id;
+    public String youtube_id;
     public String name;
     public String image;
 
@@ -13,7 +13,7 @@ public class SubscriptionData {
         this.image = image;
     }
 
-    public SubscriptionData(int id, int instagram_id, int twitter_id, int youtube_id, String name, String image) {
+    public SubscriptionData(int id, String instagram_id, String twitter_id, String youtube_id, String name, String image) {
         this.id = id;
         this.instagram_id = instagram_id;
         this.twitter_id = twitter_id;

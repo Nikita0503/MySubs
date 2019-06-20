@@ -110,8 +110,10 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         super.onStart();
         mPresenter.onStart();
         mPresenter.checkIsSignedIn();
-        mPresenter.fetchTwitterPostsIds("JohnCena");
-        mPresenter.fetchInstagramPosts("232192182");
+        //mPresenter.fetchTwitterPostsIds("JohnCena");
+        //mPresenter.fetchInstagramPosts("232192182");
+        //mPresenter.fetchYouTubePostsIds("user/TheBrainDit");
+        mPresenter.fetchSubscriptions();
     }
 
     @Override
@@ -159,6 +161,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
                 mAdapter.resetSelectedIndex();
                 hideDrawerLayout();
                 Intent intent = new Intent(MainActivity.this, NewSubscriptionActivity.class);
+                intent.putExtra("token", mPresenter.token);
                 startActivity(intent);
             }
         });
@@ -178,7 +181,11 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         mImageViewTwitterIcon = navigationView.findViewById(R.id.imageViewTwitterIcon);
         mImageViewInstagramIcon = navigationView.findViewById(R.id.imageViewInstagramIcon);
         mImageViewYouTubeIcon = navigationView.findViewById(R.id.imageViewYouTubeIcon);
-        mPresenter.fetchSubscriptions();
+    }
+
+    @Override
+    public void showMessage(String message){
+        Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
     }
 
     public void showYouTubeIcon(){
@@ -205,8 +212,11 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
                 .into(mImageViewUser);
     }
 
-
-
+    public void fetchPosts(SubscriptionData subscriptionData){
+        mPresenter.fetchYouTubePostsIds(subscriptionData.youtube_id);
+        mPresenter.fetchTwitterPostsIds(subscriptionData.twitter_id);
+        mPresenter.fetchInstagramPosts("232192182");
+    }
 
     public void addSubscriptions(ArrayList<SubscriptionData> subs){
         subs.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));
@@ -235,6 +245,12 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    public void onStop(){
+        super.onStop();
+        mPresenter.onStop();
     }
 
     public class SpacesItemDecoration extends RecyclerView.ItemDecoration

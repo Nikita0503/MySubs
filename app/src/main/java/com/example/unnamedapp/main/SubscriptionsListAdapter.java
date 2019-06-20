@@ -55,6 +55,7 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
                 mActivity.hideDrawerLayout();
                 mSelectedIndex = i;
                 notifyDataSetChanged();
+                mActivity.fetchPosts(mList.get(i));
             }
         });
         if(mSelectedIndex == i && mSelectedIndex > -1) {

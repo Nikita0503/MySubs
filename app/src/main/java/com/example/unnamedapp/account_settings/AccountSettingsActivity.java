@@ -11,6 +11,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -18,6 +19,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.bumptech.glide.Glide;
 import com.example.unnamedapp.BaseContract;
@@ -117,6 +119,11 @@ public class AccountSettingsActivity extends AppCompatActivity implements BaseCo
         Picasso.with(getApplicationContext())
                 .load(userData.avatar)
                 .into(imageViewAvatar);
+    }
+
+    @Override
+    public void showMessage(String message){
+        Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
     }
 
     public void showYouTubeUser(UserData userData){

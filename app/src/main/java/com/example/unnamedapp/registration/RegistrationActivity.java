@@ -53,6 +53,7 @@ public class RegistrationActivity extends AppCompatActivity implements BaseContr
         ButterKnife.bind(this);
     }
 
+    @Override
     public void showMessage(String message){
         Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
     }
