@@ -13,6 +13,7 @@ public interface Constants {
     static final String PREF_ACCOUNT_NAME = "accountName";
     static final String[] SCOPES = { YouTubeScopes.YOUTUBE_READONLY };
 
+    static final int GALLERY_REQUEST = 0;
     static final int INSTAGRAM_ID = 1;
     static final int TWITTER_ID = 2;
     static final int YOUTUBE_ID = 3;

@@ -21,12 +21,17 @@ public class APIInstagramUtils {
         return apiService.getInstagramUserdata(accessToken);
     }
 
+    public Single<ResponseBody> getIdByUsername(String username){
+        Retrofit retrofit = getClient("https://www.instagram.com/");
+        APIService apiService = retrofit.create(APIService.class);
+        return apiService.getIdByUsername(username);
+    }
+
     public Single<ResponseBody> getInstagramPosts(String userId){
         Retrofit retrofit = getClient("https://www.instagram.com/");
         APIService apiService = retrofit.create(APIService.class);
         return apiService.getInstagramPosts(userId);
     }
-
 
     public static Retrofit getClient(String baseUrl) {
         Retrofit retrofit = new Retrofit.Builder()

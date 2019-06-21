@@ -11,6 +11,7 @@ import java.util.ArrayList;
 
 import io.reactivex.Completable;
 import io.reactivex.Single;
+import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
@@ -19,6 +20,7 @@ import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
 import retrofit2.http.Part;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 public interface APIService {
@@ -41,9 +43,13 @@ public interface APIService {
     @Multipart
     @POST("subs/")
     Completable sendNewSubscription2(@Header("Authorization") String token, @Part("name") RequestBody name,
-                                    @Part("instagram_id") RequestBody instagram_id,
-                                    @Part("twitter_id") RequestBody twitter_id,
-                                    @Part("youtube_id") RequestBody youtube_id);
+                                     @Part("instagram_id") RequestBody instagram_id,
+                                     @Part("twitter_id") RequestBody twitter_id,
+                                     @Part("youtube_id") RequestBody youtube_id,
+                                     @Part MultipartBody.Part data);
+
+    @GET("{username}/?__a=1")
+    Single<ResponseBody> getIdByUsername(@Path("username") String username);
 
     @GET("graphql/query/?query_id=17888483320059182&first=8")
     Single<ResponseBody> getInstagramPosts(@Query("id") String id);

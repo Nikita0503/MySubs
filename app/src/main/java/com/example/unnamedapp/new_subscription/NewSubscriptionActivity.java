@@ -1,7 +1,11 @@
 package com.example.unnamedapp.new_subscription;
 
+import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.widget.Button;
@@ -18,12 +22,15 @@ import com.example.unnamedapp.model.AvatarTransformation;
 import com.example.unnamedapp.model.Constants;
 import com.squareup.picasso.Picasso;
 
+import java.io.File;
+
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
 public class NewSubscriptionActivity extends AppCompatActivity implements BaseContract.BaseView {
 
+    private File mPhoto;
     private NewSubscriptionPresenter mPresenter;
 
     @BindView(R.id.editTextName)
@@ -59,10 +66,17 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
         startActivityForResult(intent, Constants.YOUTUBE_ID);
     }
 
+    @OnClick(R.id.imageViewAvatar)
+    void onClickChooseAvatar(){
+        Intent photoPickerIntent = new Intent(Intent.ACTION_PICK);
+        photoPickerIntent.setType("image/*");
+        startActivityForResult(photoPickerIntent, Constants.GALLERY_REQUEST);
+    }
+
     @OnClick(R.id.buttonCreate)
     void onClickNewSubscription(){
         String name = editTextName.getText().toString();
-        mPresenter.sendNewSubscription(name);
+        mPresenter.sendNewSubscription(name, mPhoto);
     }
 
     @Override
@@ -100,6 +114,14 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
         if (data == null) {
             return;
         }
+        if(requestCode == Constants.GALLERY_REQUEST){
+            Uri selectedImage = data.getData();
+            mPhoto = new File(getRealPathFromUri(getApplicationContext(), selectedImage));
+            Picasso.with(getApplicationContext())
+                    .load(selectedImage)
+                    .transform(new AvatarTransformation())
+                    .into(imageViewAvatar);
+        }
         if(requestCode == Constants.INSTAGRAM_ID) {
             String user = data.getStringExtra("user");
             buttonInstagram.setText(user);
@@ -117,6 +139,21 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
             mPresenter.setYouTubeUser(user);
             buttonYouTube.setText(user.split("/")[1]);
             Toast.makeText(getApplicationContext(), user, Toast.LENGTH_LONG).show();
+        }
+    }
+
+    private String getRealPathFromUri(Context context, Uri contentUri) {
+        Cursor cursor = null;
+        try {
+            String[] proj = { MediaStore.Images.Media.DATA };
+            cursor = context.getContentResolver().query(contentUri, proj, null, null, null);
+            int column_index = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA);
+            cursor.moveToFirst();
+            return cursor.getString(column_index);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
         }
     }
 

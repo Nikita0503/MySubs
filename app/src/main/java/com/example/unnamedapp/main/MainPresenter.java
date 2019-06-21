@@ -183,7 +183,34 @@ public class MainPresenter implements BaseContract.BasePresenter {
         mDisposable.add(twitterPostsIds);
     }
 
+    public void fetchIdByUsername(String username){
+        Disposable instagramId = mApiInstagramUtils.getIdByUsername(username)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                    @Override
+                    public void onSuccess(ResponseBody value) {
+                        try {
+                            JSONObject object = new JSONObject(value.string());
+                            String id = object.getString("logging_page_id").split("_")[1];
+                            fetchInstagramPosts(id);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
+        mDisposable.add(instagramId);
+    }
+
     public void fetchInstagramPosts(String id){
+
         Disposable instagramPosts = mApiInstagramUtils.getInstagramPosts(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())

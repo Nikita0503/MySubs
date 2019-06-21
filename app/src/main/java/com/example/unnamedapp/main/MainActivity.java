@@ -1,5 +1,6 @@
 package com.example.unnamedapp.main;
 
+import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -11,6 +12,7 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.v4.app.ActivityCompat;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -119,6 +121,9 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        ActivityCompat.requestPermissions(this,
+                new String[]{Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE, Manifest.permission.READ_EXTERNAL_STORAGE, Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                1);
         TwitterConfig config = new TwitterConfig.Builder(this)
                 .twitterAuthConfig(new TwitterAuthConfig("hlTZzOf9Ww9UwfFW4nObQQmTU", "PTTXNYMYbLkRv8On2YEOKSiqUtyRvt2fDZlzfpW2NLa7uYGZDA"))
                 .debug(true)
@@ -215,7 +220,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
     public void fetchPosts(SubscriptionData subscriptionData){
         mPresenter.fetchYouTubePostsIds(subscriptionData.youtube_id);
         mPresenter.fetchTwitterPostsIds(subscriptionData.twitter_id);
-        mPresenter.fetchInstagramPosts("232192182");
+        mPresenter.fetchIdByUsername(subscriptionData.instagram_id);
     }
 
     public void addSubscriptions(ArrayList<SubscriptionData> subs){

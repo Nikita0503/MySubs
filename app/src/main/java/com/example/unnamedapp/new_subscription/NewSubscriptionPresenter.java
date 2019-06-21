@@ -7,11 +7,16 @@ import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.APIUtils.APIUtils;
 import com.example.unnamedapp.model.data.SubscriptionData;
 
+import java.io.File;
+
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.schedulers.Schedulers;
+import okhttp3.MediaType;
+import okhttp3.MultipartBody;
+import okhttp3.RequestBody;
 
 public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
 
@@ -45,12 +50,14 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
         mYouTubeUser = youTubeUser;
     }
 
-    public void sendNewSubscription(final String name){
+    public void sendNewSubscription(final String name, File filePhoto){
         SubscriptionData subscriptionData = new SubscriptionData(name, null);
         subscriptionData.instagram_id = mInstagramUser;
         subscriptionData.twitter_id = mTwitterUser;
         subscriptionData.youtube_id = mYouTubeUser;
-        Disposable newSubscription = mApiUtils.sendNewSubscription2(subscriptionData)
+        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePhoto);
+        MultipartBody.Part photo = MultipartBody.Part.createFormData("image", filePhoto.getName(), requestFile);
+        Disposable newSubscription = mApiUtils.sendNewSubscription2(subscriptionData, photo)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(new DisposableCompletableObserver() {
