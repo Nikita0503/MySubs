@@ -1,18 +1,26 @@
 package com.example.unnamedapp.new_subscription;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.widget.Toast;
 
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.APIUtils.APIUtils;
+import com.example.unnamedapp.model.APIUtils.APIYouTubeUtils;
+import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.SubscriptionData;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.ExponentialBackOff;
 
 import java.io.File;
+import java.util.Arrays;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
@@ -72,6 +80,35 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
                     }
                 });
         mDisposable.add(newSubscription);
+    }
+
+    public void fetchChannelNameById(String id){
+        APIYouTubeUtils apiYouTubeUtils = new APIYouTubeUtils();
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String youtubeToken = sp.getString("YouTubeToken", "");
+        GoogleAccountCredential mCredential = GoogleAccountCredential.usingOAuth2(
+                mActivity.getApplicationContext(), Arrays.asList(Constants.SCOPES))
+                .setBackOff(new ExponentialBackOff());
+        if(!youtubeToken.equals("")){
+            mCredential.setSelectedAccountName(youtubeToken);
+        }
+        apiYouTubeUtils.setCredential(mCredential);
+        apiYouTubeUtils.setChannel(id, APIYouTubeUtils.CHANNEL_ID);
+        Disposable channelName =  apiYouTubeUtils.getChannelNameById
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<String>() {
+                    @Override
+                    public void onSuccess(String name) {
+                        mActivity.setYouTubeChannelName(name);
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
     }
 
     @Override

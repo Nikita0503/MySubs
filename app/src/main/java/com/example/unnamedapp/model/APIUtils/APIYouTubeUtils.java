@@ -55,6 +55,7 @@ public class APIYouTubeUtils {
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
             Log.d("YOUTUBE_C", mCredential.getSelectedAccountName());
+            Log.d("YOUTUBE_NAME", mType + " " + mChannel);
             mService = new com.google.api.services.youtube.YouTube.Builder(
                     transport, jsonFactory, mCredential)
                     .setApplicationName("MySubs")
@@ -100,5 +101,23 @@ public class APIYouTubeUtils {
         }
     });
 
-
+    public Single<String> getChannelNameById = Single.create(new SingleOnSubscribe<String>() {
+        @Override
+        public void subscribe(SingleEmitter<String> e) throws Exception {
+            com.google.api.services.youtube.YouTube mService = null;
+            HttpTransport transport = AndroidHttp.newCompatibleTransport();
+            JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
+            mService = new com.google.api.services.youtube.YouTube.Builder(
+                    transport, jsonFactory, mCredential)
+                    .setApplicationName("MySubs")
+                    .build();
+            ChannelListResponse result = null;
+            result = mService.channels().list("snippet")
+                    .setId(mChannel)
+                    .setFields("items/snippet/title")
+                    .execute();
+            String channelName = result.getItems().get(0).getSnippet().getTitle();
+            e.onSuccess(channelName);
+        }
+    });
 }

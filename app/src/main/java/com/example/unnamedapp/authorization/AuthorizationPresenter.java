@@ -1,12 +1,20 @@
 package com.example.unnamedapp.authorization;
 
+import android.accounts.AccountManager;
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.APIUtils.APIUtils;
+import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.LoginData;
 import com.example.unnamedapp.model.data.AuthData;
+import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
+import com.google.api.client.util.ExponentialBackOff;
+
+import java.util.Arrays;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -29,6 +37,15 @@ public class AuthorizationPresenter implements BaseContract.BasePresenter {
     @Override
     public void onStart() {
         mDisposable = new CompositeDisposable();
+    }
+
+    public void isSignedIn(){
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String token = sp.getString("AppToken", "");
+        if(!token.equals("")){
+            mActivity.openMainActivity(token);
+        }
     }
 
     public void fetchAuthorizationToken(String email, String password) {
@@ -56,6 +73,11 @@ public class AuthorizationPresenter implements BaseContract.BasePresenter {
                             Log.d("VALUE", authData.name);
                             Log.d("VALUE", authData.token);
                             Log.d("VALUE", authData.email);
+                            SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                                    Context.MODE_PRIVATE);
+                            SharedPreferences.Editor editor = sp.edit();
+                            editor.putString("AppToken", authData.token);
+                            editor.commit();
                         } catch (Exception c){
                             c.printStackTrace();
                         }

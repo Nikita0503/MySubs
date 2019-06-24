@@ -47,6 +47,7 @@ public class AuthorizationActivity extends AppCompatActivity implements BaseCont
         setContentView(R.layout.activity_authorization);
         initViews();
         mPresenter = new AuthorizationPresenter(this);
+        mPresenter.isSignedIn();
         //openMainActivity("12");
 
     }

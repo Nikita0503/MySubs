@@ -51,6 +51,7 @@ public class WallListAdapter extends RecyclerView.Adapter {
     }
 
     public void addPosts(ArrayList<PostData> ids){
+        mPosts.clear();
         mPosts.addAll(ids);
         notifyDataSetChanged();
         Log.d("SORT", "count = " + mPosts.size());

@@ -104,6 +104,10 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
         ButterKnife.bind(this);
     }
 
+    public void setYouTubeChannelName(String name){
+        buttonYouTube.setText(name);
+    }
+
     @Override
     public void showMessage(String message){
         Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
@@ -137,7 +141,11 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
         if(requestCode == Constants.YOUTUBE_ID) {
             String user = data.getStringExtra("user");
             mPresenter.setYouTubeUser(user);
-            buttonYouTube.setText(user.split("/")[1]);
+            if(user.split("/")[0].equals("channel")){
+                mPresenter.fetchChannelNameById(user.split("/")[1]);
+            }else{
+                buttonYouTube.setText(user.split("/")[1]);
+            }
             Toast.makeText(getApplicationContext(), user, Toast.LENGTH_LONG).show();
         }
     }
