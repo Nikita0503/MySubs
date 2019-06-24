@@ -110,7 +110,7 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
 
     @Override
     public void showMessage(String message){
-        Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

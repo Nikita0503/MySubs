@@ -52,4 +52,5 @@ dependencies {
     }
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
     implementation 'com.github.PierfrancescoSoffritti:AndroidYouTubePlayer:7.0.1'
+    implementation 'com.marshalchen.ultimaterecyclerview:library:0.7.6'
 }

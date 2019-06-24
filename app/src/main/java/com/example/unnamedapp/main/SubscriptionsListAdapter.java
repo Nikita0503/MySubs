@@ -53,15 +53,22 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
             @Override
             public void onClick(View view) {
                 mActivity.hideDrawerLayout();
-                mSelectedIndex = i;
+                //mSelectedIndex = i;
                 notifyDataSetChanged();
                 mActivity.fetchPosts(mList.get(i));
             }
         });
-        if(mSelectedIndex == i && mSelectedIndex > -1) {
-            holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
-            holder.textViewName.setTextColor(Color.parseColor("#ffffff"));
-        }
+        holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View v) {
+                mActivity.deleteSubscription(mList.get(i).id);
+                return true;
+            }
+        });
+        //if(mSelectedIndex == i && mSelectedIndex > -1) {
+        //    holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
+        //    holder.textViewName.setTextColor(Color.parseColor("#ffffff"));
+        //}
     }
 
     public void resetSelectedIndex(){
@@ -70,6 +77,7 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
     }
 
     public void addSubscriptions(ArrayList<SubscriptionData> subscriptions){
+        mList.clear();
         mList.addAll(subscriptions);
         notifyDataSetChanged();
     }

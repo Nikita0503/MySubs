@@ -28,10 +28,15 @@ public class ChooseYouTubeActivity extends AppCompatActivity implements BaseCont
             Log.d("SPLIT", webViewYouTube.getOriginalUrl());
             String name = webViewYouTube.getOriginalUrl().split("https://m.youtube.com/")[1];
             Log.d("SPLIT", name);
-            Intent intent = new Intent();
-            intent.putExtra("user", name);
-            setResult(RESULT_OK, intent);
-            finish();
+            if(name.split("/")[0].equals("feed")){
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.choose_a_channel), Toast.LENGTH_SHORT).show();
+            }else{
+                Intent intent = new Intent();
+                intent.putExtra("user", name);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+
         }catch (Exception c){
             c.printStackTrace();
             setResult(RESULT_CANCELED);

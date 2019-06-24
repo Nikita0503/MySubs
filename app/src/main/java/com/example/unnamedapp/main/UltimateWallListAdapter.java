@@ -12,7 +12,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-import android.widget.FrameLayout;
 
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.Constants;
@@ -30,14 +29,15 @@ import com.twitter.sdk.android.tweetui.TweetView;
 
 import java.util.ArrayList;
 
-public class WallListAdapter extends RecyclerView.Adapter {
-
+public class UltimateWallListAdapter extends RecyclerView.Adapter {
+    YouTubePlayer player;
     private MainActivity mActivity;
     private Context mContext;
-;
+    //private ArrayList<Long> mList;
+    //private ArrayList<String> mInstagramList;
     private ArrayList<PostData> mPosts;
 
-    public WallListAdapter(MainActivity activity){
+    public UltimateWallListAdapter(MainActivity activity){
         mActivity = activity;
         mContext = activity.getApplicationContext();
         //mList = new ArrayList<Long>();
@@ -55,13 +55,23 @@ public class WallListAdapter extends RecyclerView.Adapter {
         //}
     }
 
+   //public void addInstagramList(ArrayList<String> list){
+   //    mInstagramList.addAll(list);
+   //    notifyDataSetChanged();
+   //}
+
+   //public void addPosts(ArrayList<PostData> postData){
+   //    mPosts.addAll(postData);
+   //    notifyDataSetChanged();
+   //}
+
     @NonNull
     @Override
     public RecyclerView.ViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
         Context context = viewGroup.getContext();
         LayoutInflater inflater = LayoutInflater.from(context);
         View view = inflater.inflate(R.layout.post_item, viewGroup, false);
-        return new WallListAdapter.ViewHolder(view);
+        return new UltimateWallListAdapter.ViewHolder(view);
     }
 
 
@@ -91,10 +101,17 @@ public class WallListAdapter extends RecyclerView.Adapter {
                             "var head = document. getElementsByClassName ('ltpMr Slqrh') [0] .style.display = 'none';" +
                             "var head = document. getElementsByClassName ('bY2yH') [0] .style.display = 'none';" +
                             "}) ()");
-
+                    //holder.itemView.setVisibility(View.VISIBLE);
+                    Log.d("INSTAGRAM", view.getUrl());
+                    Log.d("INSTAGRAM", "height1 = " + view.getContentHeight());
+                    // Set the height of the webview to view.getContentHeight() here?
+                    //webView.setLayoutParams(new ConstraintLayout.LayoutParams(mActivity.getResources().getDisplayMetrics().widthPixels, oW_lN _0mzm- sqdOP yWX7d    _8A5w5
+                    //        (int) (view.getContentHeight() * mActivity.getResources().getDisplayMetrics().density)));
+                    //webView.getSettings().setJavaScriptEnabled(false);
                 }
 
             });
+            //holder.layout.setLayoutParams(new FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
             holder.layout.addView(webView);
         }
         if(mPosts.get(i).socialWebId == Constants.TWITTER_ID) {

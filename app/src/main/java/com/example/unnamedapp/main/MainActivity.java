@@ -195,14 +195,23 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
 
     public void showYouTubeIcon(){
         mImageViewYouTubeIcon.setVisibility(View.VISIBLE);
+        Picasso.with(getApplicationContext())
+                .load(R.drawable.ic_youtube)
+                .into(mImageViewYouTubeIcon);
     }
 
     public void showTwitterIcon(){
         mImageViewTwitterIcon.setVisibility(View.VISIBLE);
+        Picasso.with(getApplicationContext())
+                .load(R.drawable.ic_twitter)
+                .into(mImageViewTwitterIcon);
     }
 
     public void showInstagramIcon(){
         mImageViewInstagramIcon.setVisibility(View.VISIBLE);
+        Picasso.with(getApplicationContext())
+                .load(R.drawable.ic_instagram)
+                .into(mImageViewInstagramIcon);
     }
 
     public void hideDrawerLayout(){
@@ -223,8 +232,12 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         mPresenter.fetchIdByUsername(subscriptionData.instagram_id);
     }
 
+    public void deleteSubscription(int id){
+        mPresenter.deleteSubscription(id);
+    }
+
     public void addSubscriptions(ArrayList<SubscriptionData> subs){
-        subs.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));
+        //subs.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));
         mAdapter.addSubscriptions(subs);
         //ArrayList<SubscriptionData> list = new ArrayList<SubscriptionData>();
         //list.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));

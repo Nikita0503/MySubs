@@ -15,6 +15,7 @@ import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
 import okhttp3.ResponseBody;
 import retrofit2.http.Body;
+import retrofit2.http.DELETE;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
@@ -37,12 +38,19 @@ public interface APIService {
     @GET("subs/")
     Single<ArrayList<SubscriptionData>> getSubscriptions(@Header("Authorization") String token);
 
-    @POST("subs/")
-    Completable sendNewSubscription(@Header("Authorization") String token, @Body SubscriptionData subscriptionData);
+    @DELETE("subs/{id}/")
+    Completable deleteSubscription(@Header("Authorization") String token, @Path("id") int id);
 
     @Multipart
     @POST("subs/")
-    Completable sendNewSubscription2(@Header("Authorization") String token, @Part("name") RequestBody name,
+    Completable sendNewSubscription(@Header("Authorization") String token,  @Part("name") RequestBody name,
+                                    @Part("instagram_id") RequestBody instagram_id,
+                                    @Part("twitter_id") RequestBody twitter_id,
+                                    @Part("youtube_id") RequestBody youtube_id);
+
+    @Multipart
+    @POST("subs/")
+    Completable sendNewSubscriptionWithPhoto(@Header("Authorization") String token, @Part("name") RequestBody name,
                                      @Part("instagram_id") RequestBody instagram_id,
                                      @Part("twitter_id") RequestBody twitter_id,
                                      @Part("youtube_id") RequestBody youtube_id,

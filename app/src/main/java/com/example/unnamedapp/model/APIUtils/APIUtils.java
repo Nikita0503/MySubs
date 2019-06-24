@@ -20,7 +20,8 @@ import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIUtils {
-    private static final String BASE_URL = "http://ec2-52-24-180-23.us-west-2.compute.amazonaws.com/api/";
+    //private static final String BASE_URL = "http://ec2-52-24-180-23.us-west-2.compute.amazonaws.com/api/";
+    private static final String BASE_URL = "http://ec2-52-24-180-23.us-west-2.compute.amazonaws.com:8000/api/";
     private String mToken;
 
     public void setToken(String token){
@@ -45,13 +46,23 @@ public class APIUtils {
         return apiService.getSubscriptions("token " + mToken);
     }
 
+    public Completable deleteSubscription(int id){
+        Retrofit retrofit = getClient(BASE_URL);
+        APIService apiService = retrofit.create(APIService.class);
+        return apiService.deleteSubscription("token " + mToken, id);
+    }
+
     public Completable sendNewSubscription(SubscriptionData subscriptionData){
         Retrofit retrofit = getClient(BASE_URL);
         APIService apiService = retrofit.create(APIService.class);
-        return apiService.sendNewSubscription("token " + mToken, subscriptionData);
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.name);
+        RequestBody instagramId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.instagram_id);
+        RequestBody twitterId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.twitter_id);
+        RequestBody youtubeId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.youtube_id);
+        return apiService.sendNewSubscription("token " + mToken, name, instagramId, twitterId, youtubeId);
     }
 
-    public Completable sendNewSubscription2(SubscriptionData subscriptionData, MultipartBody.Part photo){
+    public Completable sendNewSubscription(SubscriptionData subscriptionData, MultipartBody.Part photo){
         Retrofit retrofit = getClient(BASE_URL);
         APIService apiService = retrofit.create(APIService.class);
         RequestBody name = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.name);
@@ -59,7 +70,7 @@ public class APIUtils {
         RequestBody twitterId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.twitter_id);
         RequestBody youtubeId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.youtube_id);
         Log.d("token", mToken);
-        return apiService.sendNewSubscription2("token " + mToken, name, instagramId, twitterId, youtubeId, photo);
+        return apiService.sendNewSubscriptionWithPhoto("token " + mToken, name, instagramId, twitterId, youtubeId, photo);
     }
 
     public static Retrofit getClient(String baseUrl) {

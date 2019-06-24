@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import com.example.unnamedapp.BaseContract;
+import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.APIUtils.APIInstagramUtils;
 import com.example.unnamedapp.model.APIUtils.APITwitterUtils;
 import com.example.unnamedapp.model.APIUtils.APIUtils;
@@ -37,6 +38,7 @@ import java.util.List;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.observers.DisposableCompletableObserver;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
 import okhttp3.Response;
@@ -119,7 +121,31 @@ public class MainPresenter implements BaseContract.BasePresenter {
         mDisposable.add(subs);
     }
 
+    public void deleteSubscription(int id){
+        Disposable deleteSub = mApiUtils.deleteSubscription(id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableCompletableObserver() {
+                    @Override
+                    public void onComplete() {
+                        mActivity.showMessage(mActivity.getResources().getString(R.string.has_been_deleted));
+                        fetchSubscriptions();
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
+        mDisposable.add(deleteSub);
+    }
+
     public void fetchYouTubePostsIds(String channelData){
+        if(channelData.equals("")){
+            mDownloadedYouTube = true;
+            sortPosts();
+            return;
+        }
         SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
                 Context.MODE_PRIVATE);
         String youtubeToken = sp.getString("YouTubeToken", "");
@@ -161,6 +187,11 @@ public class MainPresenter implements BaseContract.BasePresenter {
     }
 
     public void fetchTwitterPostsIds(String link){
+        if(link.equals("")){
+            mDownloadedTwitter = true;
+            sortPosts();
+            return;
+        }
         Disposable twitterPostsIds = mApiTwitterUtils.fetchTwitterPostsIds(link)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -184,6 +215,11 @@ public class MainPresenter implements BaseContract.BasePresenter {
     }
 
     public void fetchIdByUsername(String username){
+        if(username.equals("")){
+            mDownloadedInstagram = true;
+            sortPosts();
+            return;
+        }
         Disposable instagramId = mApiInstagramUtils.getIdByUsername(username)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -210,7 +246,6 @@ public class MainPresenter implements BaseContract.BasePresenter {
     }
 
     public void fetchInstagramPosts(String id){
-
         Disposable instagramPosts = mApiInstagramUtils.getInstagramPosts(id)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -257,6 +292,7 @@ public class MainPresenter implements BaseContract.BasePresenter {
                 Log.d("SORT", mPosts.get(i).socialWebId + " " + dateFormat.format(mPosts.get(i).date));
             }
             mActivity.addPosts(mPosts);
+            mPosts.clear();
         }
 
     }

@@ -2,6 +2,7 @@ package com.example.unnamedapp.new_subscription;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.util.Log;
 import android.widget.Toast;
 
 import com.example.unnamedapp.BaseContract;
@@ -39,6 +40,9 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
         mActivity = activity;
         mApiUtils = new APIUtils();
         mApiUtils.setToken(token);
+        mInstagramUser = "";
+        mTwitterUser = "";
+        mYouTubeUser = "";
     }
 
     @Override
@@ -63,22 +67,47 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
         subscriptionData.instagram_id = mInstagramUser;
         subscriptionData.twitter_id = mTwitterUser;
         subscriptionData.youtube_id = mYouTubeUser;
-        RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePhoto);
-        MultipartBody.Part photo = MultipartBody.Part.createFormData("image", filePhoto.getName(), requestFile);
-        Disposable newSubscription = mApiUtils.sendNewSubscription2(subscriptionData, photo)
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(new DisposableCompletableObserver() {
-                    @Override
-                    public void onComplete() {
-                        mActivity.showMessage(name + " " + mActivity.getResources().getString(R.string.has_been_added));
-                    }
+        Disposable newSubscription;
+        Log.d("User", "YouTube " + mYouTubeUser);
+        Log.d("User", "Twitter" + mTwitterUser);
+        Log.d("User", "Instagram" + mInstagramUser);
+        if(filePhoto != null) {
+            Log.d("FILE", "not null");
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePhoto);
+            MultipartBody.Part photo = MultipartBody.Part.createFormData("image", filePhoto.getName(), requestFile);
+            newSubscription = mApiUtils.sendNewSubscription(subscriptionData, photo)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            mActivity.showMessage(name + " " + mActivity.getResources().getString(R.string.has_been_added));
+                            mActivity.finish();
+                        }
 
-                    @Override
-                    public void onError(Throwable e) {
-                        e.printStackTrace();
-                    }
-                });
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }else{
+            Log.d("FILE", "null");
+            newSubscription = mApiUtils.sendNewSubscription(subscriptionData)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            mActivity.showMessage(name + " " + mActivity.getResources().getString(R.string.has_been_added));
+                            mActivity.finish();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
         mDisposable.add(newSubscription);
     }
 
@@ -109,6 +138,7 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
                         e.printStackTrace();
                     }
                 });
+        mDisposable.add(channelName);
     }
 
     @Override
