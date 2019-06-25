@@ -27,6 +27,7 @@ public class ChooseInstagramActivity extends AppCompatActivity implements BaseCo
     void onClickRemember(){
         try {
             String name = webViewInstagram.getOriginalUrl().split("https://www.instagram.com/")[1];
+            Log.d("SPLIT", webViewInstagram.getOriginalUrl());
             name = name.substring(0, name.length() - 1);
             Log.d("SPLIT", name);
             Intent intent = new Intent();

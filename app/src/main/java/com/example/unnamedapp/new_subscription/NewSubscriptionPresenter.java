@@ -82,12 +82,14 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
                         @Override
                         public void onComplete() {
                             mActivity.showMessage(name + " " + mActivity.getResources().getString(R.string.has_been_added));
+                            mActivity.hideLoading();
                             mActivity.finish();
                         }
 
                         @Override
                         public void onError(Throwable e) {
                             e.printStackTrace();
+                            mActivity.hideLoading();
                         }
                     });
         }else{

@@ -21,14 +21,12 @@ import java.util.ArrayList;
 public class SubscriptionsListAdapter extends RecyclerView.Adapter {
 
     private MainActivity mActivity;
-    private int mSelectedIndex;
     private Context mContext;
     private ArrayList<SubscriptionData> mList;
 
     public SubscriptionsListAdapter(Context context, MainActivity activity) {
         mContext = context;
         this.mList = new ArrayList<SubscriptionData>();
-        mSelectedIndex = -1;
         mActivity = activity;
     }
 
@@ -56,6 +54,7 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
                 //mSelectedIndex = i;
                 notifyDataSetChanged();
                 mActivity.fetchPosts(mList.get(i));
+                mActivity.showLoading();
             }
         });
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
@@ -65,14 +64,9 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
                 return true;
             }
         });
-        //if(mSelectedIndex == i && mSelectedIndex > -1) {
-        //    holder.itemView.setBackgroundColor(mContext.getResources().getColor(R.color.colorPrimary));
-        //    holder.textViewName.setTextColor(Color.parseColor("#ffffff"));
-        //}
     }
 
     public void resetSelectedIndex(){
-        mSelectedIndex = -1;
         notifyDataSetChanged();
     }
 

@@ -291,6 +291,10 @@ public class  MainPresenter implements BaseContract.BasePresenter {
             for(int i = 0; i < mPosts.size(); i++) {
                 Log.d("SORT", mPosts.get(i).socialWebId + " " + dateFormat.format(mPosts.get(i).date));
             }
+            mDownloadedTwitter = false;
+            mDownloadedInstagram = false;
+            mDownloadedYouTube = false;
+            mActivity.hideLoading();
             mActivity.addPosts(mPosts);
             mPosts.clear();
         }

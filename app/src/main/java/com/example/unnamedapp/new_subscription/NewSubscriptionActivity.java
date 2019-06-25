@@ -8,9 +8,11 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.example.unnamedapp.BaseContract;
@@ -35,18 +37,18 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
 
     @BindView(R.id.editTextName)
     EditText editTextName;
-
     @BindView(R.id.buttonInstagram)
     Button buttonInstagram;
-
     @BindView(R.id.buttonTwitter)
     Button buttonTwitter;
-
     @BindView(R.id.buttonYouTube)
     Button buttonYouTube;
-
+    @BindView(R.id.buttonCreate)
+    Button buttonCreate;
     @BindView(R.id.imageViewAvatar)
     ImageView imageViewAvatar;
+    @BindView(R.id.spin_kit)
+    ProgressBar progressBar;
 
     @OnClick(R.id.buttonInstagram)
     void onClickInstagram(){
@@ -77,6 +79,7 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
     void onClickNewSubscription(){
         String name = editTextName.getText().toString();
         mPresenter.sendNewSubscription(name, mPhoto);
+        showLoading();
     }
 
     @Override
@@ -106,6 +109,15 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
 
     public void setYouTubeChannelName(String name){
         buttonYouTube.setText(name);
+    }
+
+    public void showLoading(){
+        progressBar.setVisibility(View.VISIBLE);
+        buttonCreate.setEnabled(false);
+    }
+
+    public void hideLoading(){
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

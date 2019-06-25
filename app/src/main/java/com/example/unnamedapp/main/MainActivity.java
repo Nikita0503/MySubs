@@ -33,6 +33,7 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.unnamedapp.BaseContract;
@@ -43,6 +44,10 @@ import com.example.unnamedapp.model.data.PostData;
 import com.example.unnamedapp.model.data.SubscriptionData;
 import com.example.unnamedapp.model.data.UserData;
 import com.example.unnamedapp.new_subscription.NewSubscriptionActivity;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
+import com.github.ybq.android.spinkit.style.FoldingCube;
+import com.github.ybq.android.spinkit.style.WanderingCubes;
 import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.squareup.picasso.Picasso;
 import com.twitter.sdk.android.core.Callback;
@@ -83,6 +88,8 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
     private SubscriptionsListAdapter mAdapter;
     private WallListAdapter mWallAdapter;
 
+    @BindView(R.id.spin_kit)
+    ProgressBar progressBar;
     @BindView(R.id.recyclerViewWall)
     RecyclerView recyclerViewWall;
     @BindView(R.id.toolbar)
@@ -112,9 +119,6 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         super.onStart();
         mPresenter.onStart();
         mPresenter.checkIsSignedIn();
-        //mPresenter.fetchTwitterPostsIds("JohnCena");
-        //mPresenter.fetchInstagramPosts("232192182");
-        //mPresenter.fetchYouTubePostsIds("user/TheBrainDit");
         mPresenter.fetchSubscriptions();
     }
 
@@ -138,6 +142,9 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
 
 
     public void addPosts(ArrayList<PostData> posts){
+        mWallAdapter = new WallListAdapter(this);
+        recyclerViewWall.setAdapter(mWallAdapter);
+        recyclerViewWall.invalidate();
         mWallAdapter.addPosts(posts);
     }
 
@@ -151,10 +158,6 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
                 Snackbar.make(view, "In developing", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
                 mAdapter.resetSelectedIndex();
-
-
-
-
             }
         });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -173,23 +176,24 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
                 intent.putExtra("token", mPresenter.token);
                 startActivity(intent);
             }
-        });
+        });//mWallAdapter = new WallListAdapter(this);
+        //recyclerViewWall.swapAdapter(mWallAdapter, true);
         mImageViewUser = navigationView.findViewById(R.id.imageViewAvatar);
         mTextViewUserName = navigationView.findViewById(R.id.textViewName);
         setUser(new UserData("Pudge", "https://gamepedia.cursecdn.com/dota2_gamepedia/c/c0/Pudge_icon.png"));
         mAdapter = new SubscriptionsListAdapter(getApplicationContext(), this);
         mWallAdapter = new WallListAdapter(this);
-        //mWallAdapter.setHasStableIds(false);
         mRecyclerViewSideMenu = navigationView.findViewById(R.id.recyclerViewSubscriptions);
         mRecyclerViewSideMenu.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerViewSideMenu.setAdapter(mAdapter);
         mRecyclerViewSideMenu.addItemDecoration(new SpacesItemDecoration(10));
-        //addSubscriptions();
         recyclerViewWall.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerViewWall.setAdapter(mWallAdapter);
         mImageViewTwitterIcon = navigationView.findViewById(R.id.imageViewTwitterIcon);
         mImageViewInstagramIcon = navigationView.findViewById(R.id.imageViewInstagramIcon);
         mImageViewYouTubeIcon = navigationView.findViewById(R.id.imageViewYouTubeIcon);
+        Sprite doubleBounce = new WanderingCubes();
+        progressBar.setIndeterminateDrawable(doubleBounce);
     }
 
     @Override
@@ -230,6 +234,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
                 .into(mImageViewUser);
     }
 
+
     public void fetchPosts(SubscriptionData subscriptionData){
         mPresenter.fetchYouTubePostsIds(subscriptionData.youtube_id);
         mPresenter.fetchTwitterPostsIds(subscriptionData.twitter_id);
@@ -241,22 +246,15 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
     }
 
     public void addSubscriptions(ArrayList<SubscriptionData> subs){
-        //subs.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));
         mAdapter.addSubscriptions(subs);
-        //ArrayList<SubscriptionData> list = new ArrayList<SubscriptionData>();
-        //list.add(new SubscriptionData("Sniper", "https://gamepedia.cursecdn.com/dota2_gamepedia/5/51/Sniper_icon.png"));
-        //list.add(new SubscriptionData("Tinker", "https://gamepedia.cursecdn.com/dota2_gamepedia/d/d1/Tinker_icon.png"));
-        //list.add(new SubscriptionData("Shadow Fiend", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/36/Shadow_Fiend_icon.png"));
-        //list.add(new SubscriptionData("Windranger", "https://gamepedia.cursecdn.com/dota2_gamepedia/6/60/Windranger_icon.png"));
-        //list.add(new SubscriptionData("Lina", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/35/Lina_icon.png"));
-        //list.add(new SubscriptionData("Luna" ,"https://gamepedia.cursecdn.com/dota2_gamepedia/7/7d/Luna_icon.png"));//❤
-        //list.add(new SubscriptionData("Dazzle", "https://gamepedia.cursecdn.com/dota2_gamepedia/e/e6/Dazzle_icon.png"));
-        //list.add(new SubscriptionData("Ogre Magi", "https://gamepedia.cursecdn.com/dota2_gamepedia/e/e0/Ogre_Magi_icon.png"));
-        //list.add(new SubscriptionData("Zeus", "https://gamepedia.cursecdn.com/dota2_gamepedia/3/3f/Zeus_icon.png"));
-        //list.add(new SubscriptionData("Slark", "https://gamepedia.cursecdn.com/dota2_gamepedia/a/aa/Slark_icon.png"));
-        //list.add(new SubscriptionData("Venomancer", "https://gamepedia.cursecdn.com/dota2_gamepedia/2/25/Venomancer_icon.png"));
-        //list.add(new SubscriptionData("Phoenix", "https://gamepedia.cursecdn.com/dota2_gamepedia/1/14/Phoenix_icon.png"));
-        //mAdapter.addSubscriptions(list);
+    }
+
+    public void showLoading(){
+        progressBar.setVisibility(View.VISIBLE);
+    }
+
+    public void hideLoading(){
+        progressBar.setVisibility(View.GONE);
     }
 
     @Override

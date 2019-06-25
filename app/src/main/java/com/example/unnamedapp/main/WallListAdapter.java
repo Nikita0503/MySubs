@@ -13,10 +13,16 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.FrameLayout;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.PostData;
+import com.github.ybq.android.spinkit.sprite.Sprite;
+import com.github.ybq.android.spinkit.style.DoubleBounce;
+import com.github.ybq.android.spinkit.style.WanderingCubes;
+import com.github.ybq.android.spinkit.style.Wave;
 import com.pierfrancescosoffritti.youtubeplayer.player.AbstractYouTubePlayerListener;
 import com.pierfrancescosoffritti.youtubeplayer.player.YouTubePlayerInitListener;
 import com.pierfrancescosoffritti.youtubeplayer.player.YouTubePlayerView;
@@ -40,7 +46,6 @@ public class WallListAdapter extends RecyclerView.Adapter {
     }
 
     public void addPosts(ArrayList<PostData> ids) {
-        mPosts.clear();
         mPosts.addAll(ids);
         notifyDataSetChanged();
     }
@@ -73,6 +78,8 @@ public class WallListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
         //final ViewHolder holder = (ViewHolder) viewHolder;
         if (viewHolder instanceof InstagramViewHolder) {
+            Sprite wave = new WanderingCubes();
+            ((InstagramViewHolder)viewHolder).progressBar.setIndeterminateDrawable(wave);
             ((InstagramViewHolder)viewHolder).webView.getSettings().setJavaScriptEnabled(true);
             ((InstagramViewHolder)viewHolder).webView.loadUrl("https://www.instagram.com/p/" + mPosts.get(i).postId + "/");
             ((InstagramViewHolder)viewHolder).webView.setWebViewClient(new WebViewClient() {
@@ -92,8 +99,10 @@ public class WallListAdapter extends RecyclerView.Adapter {
                             "var head = document. getElementsByClassName ('KGiwt') [0] .style.display = 'none';" +
                             "var head = document. getElementsByClassName ('ltpMr Slqrh') [0] .style.display = 'none';" +
                             "var head = document. getElementsByClassName ('bY2yH') [0] .style.display = 'none';" +
-                            "}) ()");
+                           // "var head = document. getElementsByClassName ('EtaWk') [0] .style.display = 'none';" +
 
+                            "}) ()");
+                    ((InstagramViewHolder)viewHolder).progressBar.setVisibility(View.GONE);
                 }
 
             });
@@ -119,14 +128,13 @@ public class WallListAdapter extends RecyclerView.Adapter {
                     initializedYouTubePlayer.addListener(new AbstractYouTubePlayerListener() {
                         @Override
                         public void onReady() {
-
                             initializedYouTubePlayer.cueVideo(videoId, 0);
                         }
                     });
                 }
             }, true);
+            ((YouTubeViewHolder)viewHolder).textViewTitle.setText(mPosts.get(i).videoName);
         }
-
     }
 
     @Override
@@ -136,15 +144,6 @@ public class WallListAdapter extends RecyclerView.Adapter {
 
     @Override
     public int getItemViewType(int position) {
-        //if(mPosts.get(position).socialWebId == Constants.INSTAGRAM_ID){
-        //    return Constants.INSTAGRAM_ID;
-        //}else if(mPosts.get(position).socialWebId == Constants.TWITTER_ID){
-        //    return Constants.TWITTER_ID;
-        //}else if(mPosts.get(position).socialWebId == Constants.YOUTUBE_ID){
-        //    return Constants.YOUTUBE_ID;
-        //}else{
-        //    return 0;
-        //}
         return position;
     }
 
@@ -161,18 +160,22 @@ public class WallListAdapter extends RecyclerView.Adapter {
 
     public static class InstagramViewHolder extends RecyclerView.ViewHolder {
         WebView webView;
+        ProgressBar progressBar;
 
         public InstagramViewHolder(@NonNull View itemView) {
             super(itemView);
             webView = (WebView) itemView.findViewById(R.id.webView);
+            progressBar = (ProgressBar) itemView.findViewById(R.id.spin_kit);
         }
     }
 
     public static class YouTubeViewHolder extends RecyclerView.ViewHolder {
+        TextView textViewTitle;
         YouTubePlayerView youTubePlayerView;
 
         public YouTubeViewHolder(@NonNull View itemView) {
             super(itemView);
+            textViewTitle = (TextView) itemView.findViewById(R.id.textViewTitle);
             youTubePlayerView = (YouTubePlayerView) itemView.findViewById(R.id.youtube_view);
         }
     }

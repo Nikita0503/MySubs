@@ -122,4 +122,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"
+        android:id="@+id/spin_kit"
+        style="@style/SpinKitView.WanderingCubes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginEnd="8dp"
+        app:SpinKit_Color="@color/colorPrimaryDark"
+        app:layout_constraintBottom_toBottomOf="@+id/buttonCreate"
+        app:layout_constraintEnd_toEndOf="@+id/buttonCreate"
+        app:layout_constraintTop_toTopOf="@+id/buttonCreate" />
 </android.support.constraint.ConstraintLayout>

@@ -95,6 +95,7 @@ public class APIYouTubeUtils {
                 Log.d("YOUTUBE_DATA",  item.getSnippet().getPublishedAt().toString());
                 Date date = dateFormat.parse(item.getSnippet().getPublishedAt().toString());
                 PostData postData = new PostData(Constants.YOUTUBE_ID, item.getSnippet().getResourceId().getVideoId(), date);
+                postData.videoName = item.getSnippet().getTitle();
                 postList.add(postData);
             }
             e.onSuccess(postList);
