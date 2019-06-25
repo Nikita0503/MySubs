@@ -21,7 +21,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIUtils {
     //private static final String BASE_URL = "http://ec2-52-24-180-23.us-west-2.compute.amazonaws.com/api/";
-    private static final String BASE_URL = "http://ec2-52-24-180-23.us-west-2.compute.amazonaws.com:8000/api/";
+    private static final String BASE_URL = "http://ec2-52-24-180-23.us-west-2.compute.amazonaws.com/api/";
     private String mToken;
 
     public void setToken(String token){

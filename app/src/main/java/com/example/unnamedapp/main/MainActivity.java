@@ -151,6 +151,10 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
                 Snackbar.make(view, "In developing", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
                 mAdapter.resetSelectedIndex();
+
+
+
+
             }
         });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -175,7 +179,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         setUser(new UserData("Pudge", "https://gamepedia.cursecdn.com/dota2_gamepedia/c/c0/Pudge_icon.png"));
         mAdapter = new SubscriptionsListAdapter(getApplicationContext(), this);
         mWallAdapter = new WallListAdapter(this);
-        mWallAdapter.setHasStableIds(false);
+        //mWallAdapter.setHasStableIds(false);
         mRecyclerViewSideMenu = navigationView.findViewById(R.id.recyclerViewSubscriptions);
         mRecyclerViewSideMenu.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerViewSideMenu.setAdapter(mAdapter);

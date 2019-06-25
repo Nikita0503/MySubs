@@ -46,7 +46,7 @@ import okhttp3.ResponseBody;
 import twitter4j.Status;
 import twitter4j.TwitterException;
 
-public class MainPresenter implements BaseContract.BasePresenter {
+public class  MainPresenter implements BaseContract.BasePresenter {
 
     public String token;
     private boolean mDownloadedYouTube;
