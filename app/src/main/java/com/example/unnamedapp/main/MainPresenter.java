@@ -201,7 +201,6 @@ public class  MainPresenter implements BaseContract.BasePresenter {
         }
         TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
         if(twitterSession == null){
-            Log.d("twitter", twitterSession.getUserName());
             mDownloadedTwitter = true;
             sortPosts();
             return;
