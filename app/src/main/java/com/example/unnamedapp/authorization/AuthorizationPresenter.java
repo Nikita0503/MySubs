@@ -42,9 +42,10 @@ public class AuthorizationPresenter implements BaseContract.BasePresenter {
     public void isSignedIn(){
         SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
                 Context.MODE_PRIVATE);
-        String token = sp.getString("AppToken", "");
+        String token = sp.getString("appToken", "");
+        String email = sp.getString("email", "");
         if(!token.equals("")){
-            mActivity.openMainActivity(token);
+            mActivity.openMainActivity(token, email);
         }
     }
 
@@ -76,12 +77,13 @@ public class AuthorizationPresenter implements BaseContract.BasePresenter {
                             SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
                                     Context.MODE_PRIVATE);
                             SharedPreferences.Editor editor = sp.edit();
-                            editor.putString("AppToken", authData.token);
+                            editor.putString("appToken", authData.token);
+                            editor.putString("email", authData.email);
                             editor.commit();
                         } catch (Exception c){
                             c.printStackTrace();
                         }
-                        mActivity.openMainActivity(authData.token);
+                        mActivity.openMainActivity(authData.token, authData.email);
                     }
 
                     @Override

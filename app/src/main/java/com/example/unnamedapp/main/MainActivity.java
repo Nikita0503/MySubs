@@ -88,6 +88,8 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
     private SubscriptionsListAdapter mAdapter;
     private WallListAdapter mWallAdapter;
 
+    @BindView(R.id.textViewAppName)
+    TextView textViewTitle;
     @BindView(R.id.spin_kit)
     ProgressBar progressBar;
     @BindView(R.id.recyclerViewWall)
@@ -101,7 +103,6 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
     @BindView(R.id.nav_view)
     NavigationView navigationView;
     private RecyclerView mRecyclerViewSideMenu;
-    private ImageView mImageViewUser;
     private ImageView mImageViewTwitterIcon;
     private ImageView mImageViewInstagramIcon;
     private ImageView mImageViewYouTubeIcon;
@@ -112,14 +113,6 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         Intent intent = new Intent(MainActivity.this, AccountSettingsActivity.class);
         intent.putExtra("userdata", new UserData("Pudge", "https://res.cloudinary.com/teepublic/image/private/s--6liaugi7--/t_Preview/b_rgb:6e2229,c_limit,f_jpg,h_630,q_90,w_630/v1513129027/production/designs/2171617_1.jpg"));
         startActivity(intent);
-    }
-
-    @Override
-    public void onStart(){
-        super.onStart();
-        mPresenter.onStart();
-        mPresenter.checkIsSignedIn();
-        mPresenter.fetchSubscriptions();
     }
 
     @Override
@@ -138,8 +131,17 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         String token = intent.getStringExtra("token");
         mPresenter = new MainPresenter(this, token);
         initViews();
+        String email = intent.getStringExtra("email");
+        mTextViewUserName.setText(email.split("@")[0]);
     }
 
+    @Override
+    public void onStart(){
+        super.onStart();
+        mPresenter.onStart();
+        mPresenter.checkIsSignedIn();
+        mPresenter.fetchSubscriptions();
+    }
 
     public void addPosts(ArrayList<PostData> posts){
         mWallAdapter = new WallListAdapter(this);
@@ -147,7 +149,6 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         recyclerViewWall.invalidate();
         mWallAdapter.addPosts(posts);
     }
-
 
     @Override
     public void initViews() {
@@ -178,9 +179,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
             }
         });//mWallAdapter = new WallListAdapter(this);
         //recyclerViewWall.swapAdapter(mWallAdapter, true);
-        mImageViewUser = navigationView.findViewById(R.id.imageViewAvatar);
         mTextViewUserName = navigationView.findViewById(R.id.textViewName);
-        setUser(new UserData("Pudge", "https://gamepedia.cursecdn.com/dota2_gamepedia/c/c0/Pudge_icon.png"));
         mAdapter = new SubscriptionsListAdapter(getApplicationContext(), this);
         mWallAdapter = new WallListAdapter(this);
         mRecyclerViewSideMenu = navigationView.findViewById(R.id.recyclerViewSubscriptions);
@@ -226,16 +225,14 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         drawer.closeDrawer(Gravity.START, true);
     }
 
-    public void setUser(UserData user){
-        mTextViewUserName.setText(user.name);
-        Picasso.with(getApplicationContext())
-                .load(R.drawable.ic_pudge2)
-                .transform(new AvatarTransformation())
-                .into(mImageViewUser);
+    public void setUser(String userName){
+        mTextViewUserName.setText(userName.split("@")[0]);
+
     }
 
 
     public void fetchPosts(SubscriptionData subscriptionData){
+        textViewTitle.setText(subscriptionData.name);
         mPresenter.fetchYouTubePostsIds(subscriptionData.youtube_id);
         mPresenter.fetchTwitterPostsIds(subscriptionData.twitter_id);
         mPresenter.fetchIdByUsername(subscriptionData.instagram_id);

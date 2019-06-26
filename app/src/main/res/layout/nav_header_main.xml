@@ -10,7 +10,7 @@
 
     android:theme="@style/ThemeOverlay.AppCompat.Dark">
 
-    <ImageView
+    ImageView
         android:id="@+id/imageViewAvatar"
         android:layout_width="90dp"
         android:layout_height="90dp"
@@ -38,35 +38,35 @@
 
     <ImageView
         android:id="@+id/imageViewTwitterIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewName"
-        app:layout_constraintEnd_toEndOf="parent"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/textViewName"
+        app:layout_constraintStart_toEndOf="@+id/imageViewInstagramIcon"
         app:srcCompat="@drawable/ic_twitter" />
 
     <ImageView
         android:id="@+id/imageViewInstagramIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewName"
-        app:layout_constraintEnd_toStartOf="@+id/imageViewTwitterIcon"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/textViewName"
+        app:layout_constraintStart_toEndOf="@+id/imageViewYouTubeIcon"
         app:srcCompat="@drawable/ic_instagram" />
 
     <ImageView
         android:id="@+id/imageViewYouTubeIcon"
-        android:layout_width="30dp"
-        android:layout_height="30dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="8dp"
         android:layout_marginBottom="8dp"
-        app:layout_constraintBottom_toTopOf="@+id/textViewName"
-        app:layout_constraintEnd_toStartOf="@+id/imageViewInstagramIcon"
         android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@+id/textViewName"
+        app:layout_constraintStart_toStartOf="parent"
         app:srcCompat="@drawable/ic_youtube" />
 
 

@@ -19,7 +19,10 @@ import com.google.api.client.util.ExponentialBackOff;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
+import com.twitter.sdk.android.core.TwitterAuthConfig;
+import com.twitter.sdk.android.core.TwitterConfig;
 import com.twitter.sdk.android.core.TwitterCore;
+import com.twitter.sdk.android.core.TwitterSession;
 import com.twitter.sdk.android.core.models.Tweet;
 import com.twitter.sdk.android.tweetui.TweetUtils;
 
@@ -154,6 +157,10 @@ public class  MainPresenter implements BaseContract.BasePresenter {
                 .setBackOff(new ExponentialBackOff());
         if(!youtubeToken.equals("")){
             mCredential.setSelectedAccountName(youtubeToken);
+        }else{
+            mDownloadedYouTube = true;
+            sortPosts();
+            return;
         }
         String channel = channelData.split("/")[1];
         mApiYouTubeUtils.setCredential(mCredential);
@@ -163,7 +170,7 @@ public class  MainPresenter implements BaseContract.BasePresenter {
         if(channelData.split("/")[0].equals("channel")){
             mApiYouTubeUtils.setChannel(channel, APIYouTubeUtils.CHANNEL_ID);
         }
-        Log.d("YOUTUBE_DATA", mCredential.getSelectedAccountName());
+        //Log.d("YOUTUBE_DATA", mCredential.getSelectedAccountName());
         Disposable youTubePostsIds = mApiYouTubeUtils.getPopularVideos
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -192,6 +199,13 @@ public class  MainPresenter implements BaseContract.BasePresenter {
             sortPosts();
             return;
         }
+        TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+        if(twitterSession == null){
+            Log.d("twitter", twitterSession.getUserName());
+            mDownloadedTwitter = true;
+            sortPosts();
+            return;
+        }
         Disposable twitterPostsIds = mApiTwitterUtils.fetchTwitterPostsIds(link)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
@@ -216,6 +230,14 @@ public class  MainPresenter implements BaseContract.BasePresenter {
 
     public void fetchIdByUsername(String username){
         if(username.equals("")){
+            mDownloadedInstagram = true;
+            sortPosts();
+            return;
+        }
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String instagramToken = sp.getString("InstagramToken", "");
+        if(instagramToken.equals("")){
             mDownloadedInstagram = true;
             sortPosts();
             return;

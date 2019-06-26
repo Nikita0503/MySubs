@@ -57,9 +57,10 @@ public class AuthorizationActivity extends AppCompatActivity implements BaseCont
         mPresenter.onStart();
     }
 
-    public void openMainActivity(String token){
+    public void openMainActivity(String token, String email){
         Intent intent = new Intent(this, MainActivity.class);
         intent.putExtra("token", token);
+        intent.putExtra("email", email);
         startActivity(intent);
     }
 
