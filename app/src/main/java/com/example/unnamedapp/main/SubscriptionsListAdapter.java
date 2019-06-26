@@ -1,15 +1,19 @@
 package com.example.unnamedapp.main;
 
+import android.app.Dialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.AvatarTransformation;
@@ -60,7 +64,8 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
         holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
-                mActivity.deleteSubscription(mList.get(i).id);
+                //mActivity.deleteSubscription(mList.get(i).id);
+                onCreateDialog(i).show();
                 return true;
             }
         });
@@ -74,6 +79,28 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
         mList.clear();
         mList.addAll(subscriptions);
         notifyDataSetChanged();
+    }
+
+    protected Dialog onCreateDialog(final int i) {
+        final String[] choiсe = new  String[]{mActivity.getResources().getString(R.string.edit),
+        mActivity.getResources().getString(R.string.delete)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+        builder.setItems(choiсe,
+                new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                switch (item){
+                    case 0:
+                        mActivity.openEditActivity(mList.get(i));
+                        break;
+                    case 1:
+                        mActivity.deleteSubscription(mList.get(i).id);
+                        break;
+                }
+                dialog.cancel();
+            }
+        });
+        builder.setCancelable(false);
+        return builder.create();
     }
 
     @Override

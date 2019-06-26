@@ -241,6 +241,19 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         mPresenter.fetchIdByUsername(subscriptionData.instagram_id);
     }
 
+    public void openEditActivity(SubscriptionData subscription){
+        Intent intent = new Intent(this, NewSubscriptionActivity.class);
+        intent.putExtra("token", mPresenter.token);
+        intent.putExtra("editor", true);
+        intent.putExtra("id", subscription.id);
+        intent.putExtra("name", subscription.name);
+        intent.putExtra("image", subscription.image);
+        intent.putExtra("instagram_id", subscription.instagram_id);
+        intent.putExtra("twitter_id", subscription.twitter_id);
+        intent.putExtra("youtube_id", subscription.youtube_id);
+        startActivity(intent);
+    }
+
     public void deleteSubscription(int id){
         mPresenter.deleteSubscription(id);
     }

@@ -32,6 +32,7 @@ import butterknife.OnClick;
 
 public class NewSubscriptionActivity extends AppCompatActivity implements BaseContract.BaseView {
 
+    private int mId;
     private File mPhoto;
     private NewSubscriptionPresenter mPresenter;
 
@@ -77,8 +78,13 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
 
     @OnClick(R.id.buttonCreate)
     void onClickNewSubscription(){
-        String name = editTextName.getText().toString();
-        mPresenter.sendNewSubscription(name, mPhoto);
+        if(mPresenter.editor) {
+            String name = editTextName.getText().toString();
+            mPresenter.editSubscription(mId, name, mPhoto);
+        }else{
+            String name = editTextName.getText().toString();
+            mPresenter.sendNewSubscription(name, mPhoto);
+        }
         showLoading();
     }
 
@@ -86,21 +92,48 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_subscription);
+        initViews();
         Intent intent = getIntent();
         String token = intent.getStringExtra("token");
+        boolean isEditor = intent.getBooleanExtra("editor", false);
         mPresenter = new NewSubscriptionPresenter(this, token);
-        initViews();
-        Picasso.with(getApplicationContext())
-                .load(R.drawable.ic_pudge2)
-                .transform(new AvatarTransformation())
-                .into(imageViewAvatar);
+        mPresenter.onStart();
+        if(isEditor){
+            int id = intent.getIntExtra("id", -1);
+            String instagram_id = intent.getStringExtra("instagram_id");
+            String twitter_id = intent.getStringExtra("twitter_id");
+            String youtube_id = intent.getStringExtra("youtube_id");
+            String name = intent.getStringExtra("name");
+            String image = intent.getStringExtra("image");
+            if(!name.equals("")){
+                if(youtube_id.split("/")[0].equals("channel")){
+                    mPresenter.fetchChannelNameById(youtube_id.split("/")[1]);
+                }else{
+                    buttonYouTube.setText(youtube_id.split("/")[1]);
+                }
+                buttonCreate.setText(getResources().getString(R.string.edit_subscription));
+                buttonInstagram.setText(instagram_id);
+                buttonTwitter.setText(twitter_id);
+                editTextName.setText(name);
+                Picasso.with(getApplicationContext())
+                        .load(image)
+                        .transform(new AvatarTransformation())
+                        .into(imageViewAvatar);
+                mPresenter.setInstagramUser(instagram_id);
+                mPresenter.setTwitterUser(twitter_id);
+                mPresenter.setYouTubeUser(youtube_id);
+            }
+            mPresenter.editor = true;
+            mId = id;
+        }else {
+            Picasso.with(getApplicationContext())
+                    .load(R.drawable.ic_pudge2)
+                    .transform(new AvatarTransformation())
+                    .into(imageViewAvatar);
+        }
     }
 
-    @Override
-    public void onStart(){
-        super.onStart();
-        mPresenter.onStart();
-    }
+
 
     @Override
     public void initViews() {

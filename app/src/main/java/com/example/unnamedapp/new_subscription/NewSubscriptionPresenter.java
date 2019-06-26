@@ -29,6 +29,7 @@ import okhttp3.RequestBody;
 
 public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
 
+    public boolean editor;
     private String mInstagramUser;
     private String mTwitterUser;
     private String mYouTubeUser;
@@ -111,6 +112,52 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
                     });
         }
         mDisposable.add(newSubscription);
+    }
+
+    public void editSubscription(int id, final String name, File filePhoto){
+        SubscriptionData subscriptionData = new SubscriptionData(name, null);
+        subscriptionData.instagram_id = mInstagramUser;
+        subscriptionData.twitter_id = mTwitterUser;
+        subscriptionData.youtube_id = mYouTubeUser;
+        Disposable editSubscription;
+        if(filePhoto != null) {
+            RequestBody requestFile = RequestBody.create(MediaType.parse("multipart/form-data"), filePhoto);
+            MultipartBody.Part photo = MultipartBody.Part.createFormData("image", filePhoto.getName(), requestFile);
+            editSubscription = mApiUtils.editSubscription(id, subscriptionData, photo)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            mActivity.showMessage(name + " " + mActivity.getResources().getString(R.string.has_been_added));
+                            mActivity.hideLoading();
+                            mActivity.finish();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                            mActivity.hideLoading();
+                        }
+                    });
+        }else{
+            editSubscription = mApiUtils.editSubscription(id, subscriptionData)
+                    .subscribeOn(Schedulers.io())
+                    .observeOn(AndroidSchedulers.mainThread())
+                    .subscribeWith(new DisposableCompletableObserver() {
+                        @Override
+                        public void onComplete() {
+                            mActivity.showMessage(name + " " + mActivity.getResources().getString(R.string.has_been_added));
+                            mActivity.finish();
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            e.printStackTrace();
+                        }
+                    });
+        }
+        mDisposable.add(editSubscription);
     }
 
     public void fetchChannelNameById(String id){

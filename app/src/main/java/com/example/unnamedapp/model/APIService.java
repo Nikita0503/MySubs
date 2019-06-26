@@ -20,6 +20,7 @@ import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.Multipart;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Part;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
@@ -55,6 +56,23 @@ public interface APIService {
                                      @Part("twitter_id") RequestBody twitter_id,
                                      @Part("youtube_id") RequestBody youtube_id,
                                      @Part MultipartBody.Part data);
+
+    @Multipart
+    @PUT("subs/{id}/")
+    Completable editSubscription(@Header("Authorization") String token, @Path("id") int id,
+                                    @Part("name") RequestBody name,
+                                    @Part("instagram_id") RequestBody instagram_id,
+                                    @Part("twitter_id") RequestBody twitter_id,
+                                    @Part("youtube_id") RequestBody youtube_id);
+
+    @Multipart
+    @PUT("subs/{id}/")
+    Completable editSubscriptionWithPhoto(@Header("Authorization") String token, @Path("id") int id,
+                                             @Part("name") RequestBody name,
+                                             @Part("instagram_id") RequestBody instagram_id,
+                                             @Part("twitter_id") RequestBody twitter_id,
+                                             @Part("youtube_id") RequestBody youtube_id,
+                                             @Part MultipartBody.Part data);
 
     @GET("{username}/?__a=1")
     Single<ResponseBody> getIdByUsername(@Path("username") String username);

@@ -73,6 +73,27 @@ public class APIUtils {
         return apiService.sendNewSubscriptionWithPhoto("token " + mToken, name, instagramId, twitterId, youtubeId, photo);
     }
 
+    public Completable editSubscription(int id, SubscriptionData subscriptionData){
+        Retrofit retrofit = getClient(BASE_URL);
+        APIService apiService = retrofit.create(APIService.class);
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.name);
+        RequestBody instagramId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.instagram_id);
+        RequestBody twitterId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.twitter_id);
+        RequestBody youtubeId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.youtube_id);
+        return apiService.editSubscription("token " + mToken, id, name, instagramId, twitterId, youtubeId);
+    }
+
+    public Completable editSubscription(int id, SubscriptionData subscriptionData, MultipartBody.Part photo){
+        Retrofit retrofit = getClient(BASE_URL);
+        APIService apiService = retrofit.create(APIService.class);
+        RequestBody name = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.name);
+        RequestBody instagramId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.instagram_id);
+        RequestBody twitterId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.twitter_id);
+        RequestBody youtubeId = RequestBody.create(MediaType.parse("text/plain"), subscriptionData.youtube_id);
+        Log.d("token", mToken);
+        return apiService.editSubscriptionWithPhoto("token " + mToken, id, name, instagramId, twitterId, youtubeId, photo);
+    }
+
     public static Retrofit getClient(String baseUrl) {
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(baseUrl)
