@@ -170,7 +170,7 @@ public class  MainPresenter implements BaseContract.BasePresenter {
         if(channelData.split("/")[0].equals("channel")){
             mApiYouTubeUtils.setChannel(channel, APIYouTubeUtils.CHANNEL_ID);
         }
-        //Log.d("YOUTUBE_DATA", mCredential.getSelectedAccountName());
+
         Disposable youTubePostsIds = mApiYouTubeUtils.getPopularVideos
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
