@@ -78,5 +78,8 @@ public interface APIService {
     Single<ResponseBody> getIdByUsername(@Path("username") String username);
 
     @GET("graphql/query/?query_id=17888483320059182&first=8")
-    Single<ResponseBody> getInstagramPosts(@Query("id") String id);
+    Single<ResponseBody> getInstagramPosts(@Query("id") String id); //если нет токена если есть еще нужно
+
+    @GET("graphql/query/?query_id=17888483320059182&first=8")
+    Single<ResponseBody> getInstagramPosts(@Query("id") String id, @Query("after") String after);
 }

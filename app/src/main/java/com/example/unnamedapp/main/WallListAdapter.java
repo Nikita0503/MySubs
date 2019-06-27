@@ -77,6 +77,9 @@ public class WallListAdapter extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull final RecyclerView.ViewHolder viewHolder, int i) {
         //final ViewHolder holder = (ViewHolder) viewHolder;
+        if(i >= mPosts.size() - 1){
+            mActivity.fetchNextPagePosts();
+        }
         if (viewHolder instanceof InstagramViewHolder) {
             Sprite wave = new WanderingCubes();
             ((InstagramViewHolder)viewHolder).progressBar.setIndeterminateDrawable(wave);

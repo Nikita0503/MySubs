@@ -19,6 +19,17 @@ import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class APITwitterUtils {
+
+    private int mPage;
+
+    public APITwitterUtils(){
+        mPage = 1;
+    }
+
+    public void resetToStart(){
+        mPage = 1;
+    }
+
     public Single<List<Status>> fetchTwitterPostsIds(final String link){
         return Single.create(new SingleOnSubscribe<List<Status>>() {
             @Override
@@ -33,7 +44,7 @@ public class APITwitterUtils {
                 twitter4j.Twitter twitter = factory.getInstance();
                 Paging page = new Paging();
                 page.setCount(8);
-                //page.setPage(2);
+                page.setPage(mPage);
 
                 List<Status> statuses = new ArrayList<Status>();
                 try {
@@ -41,6 +52,7 @@ public class APITwitterUtils {
                 } catch (TwitterException ex) {
                     ex.printStackTrace();
                 }
+                mPage++;
                 e.onSuccess(statuses);
             }
         });

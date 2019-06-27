@@ -55,6 +55,7 @@ public class  MainPresenter implements BaseContract.BasePresenter {
     private boolean mDownloadedYouTube;
     private boolean mDownloadedInstagram;
     private boolean mDownloadedTwitter;
+    private int mNotAuthorizedWebs;
     private String mYouTubeToken;
     private String mInstagramToken;
     private String mTwitterToken;
@@ -83,6 +84,7 @@ public class  MainPresenter implements BaseContract.BasePresenter {
     @Override
     public void onStart() {
         mDisposable = new CompositeDisposable();
+        mNotAuthorizedWebs = 0;
     }
 
     public void checkIsSignedIn(){
@@ -160,6 +162,8 @@ public class  MainPresenter implements BaseContract.BasePresenter {
         }else{
             mDownloadedYouTube = true;
             sortPosts();
+            mNotAuthorizedWebs++;
+            Log.d("UNLOGGED", "YOUTUBE");
             return;
         }
         String channel = channelData.split("/")[1];
@@ -199,10 +203,14 @@ public class  MainPresenter implements BaseContract.BasePresenter {
             sortPosts();
             return;
         }
-        TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        if(twitterSession == null){
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String twitterToken = sp.getString("TwitterToken", "");
+        if(twitterToken.equals("")){
             mDownloadedTwitter = true;
             sortPosts();
+            mNotAuthorizedWebs++;
+            Log.d("UNLOGGED", "TWITER");
             return;
         }
         Disposable twitterPostsIds = mApiTwitterUtils.fetchTwitterPostsIds(link)
@@ -239,6 +247,8 @@ public class  MainPresenter implements BaseContract.BasePresenter {
         if(instagramToken.equals("")){
             mDownloadedInstagram = true;
             sortPosts();
+            mNotAuthorizedWebs++;
+            Log.d("UNLOGGED", "INSTAGRAM");
             return;
         }
         Disposable instagramId = mApiInstagramUtils.getIdByUsername(username)
@@ -278,6 +288,12 @@ public class  MainPresenter implements BaseContract.BasePresenter {
                             JSONObject objectData = object.getJSONObject("data");
                             JSONObject objectUser = objectData.getJSONObject("user");
                             JSONObject objectMedia = objectUser.getJSONObject("edge_owner_to_timeline_media");
+                            JSONObject objectPageInfo = objectMedia.getJSONObject("page_info");
+                            if(objectPageInfo.getBoolean("has_next_page")){
+                                mApiInstagramUtils.setNextPageToken(objectPageInfo.getString("end_cursor"));
+                            }else{
+                                mApiInstagramUtils.setNextPageToken(null);
+                            }
                             JSONArray arrayEdges = objectMedia.getJSONArray("edges");
                             for(int i = 0; i < arrayEdges.length(); i++){
                                 JSONObject itemNode = arrayEdges.getJSONObject(i);
@@ -305,19 +321,26 @@ public class  MainPresenter implements BaseContract.BasePresenter {
         mDisposable.add(instagramPosts);
     }
 
+    public void resetToStart(){
+        mApiInstagramUtils.resetToStart();
+        mApiTwitterUtils.resetToStart();
+        mApiYouTubeUtils.resetToStart();
+    }
+
     private void sortPosts(){
-        if(mDownloadedTwitter && mDownloadedInstagram && mDownloadedYouTube){
+        if (mDownloadedTwitter && mDownloadedInstagram && mDownloadedYouTube) {
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
             selectionSort();
-            for(int i = 0; i < mPosts.size(); i++) {
+            for (int i = 0; i < mPosts.size(); i++) {
                 Log.d("SORT", mPosts.get(i).socialWebId + " " + dateFormat.format(mPosts.get(i).date));
             }
+            Log.d("SORT", "-------------------------------------------------------------");
             mDownloadedTwitter = false;
             mDownloadedInstagram = false;
             mDownloadedYouTube = false;
             mActivity.hideLoading();
             mActivity.addPosts(mPosts);
-            mPosts.clear();
+            mPosts = new ArrayList<PostData>();
         }
 
     }

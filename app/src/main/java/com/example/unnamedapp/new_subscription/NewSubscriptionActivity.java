@@ -106,14 +106,20 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
             String name = intent.getStringExtra("name");
             String image = intent.getStringExtra("image");
             if(!name.equals("")){
-                if(youtube_id.split("/")[0].equals("channel")){
-                    mPresenter.fetchChannelNameById(youtube_id.split("/")[1]);
-                }else{
-                    buttonYouTube.setText(youtube_id.split("/")[1]);
+                if(!youtube_id.equals("")) {
+                    if (youtube_id.split("/")[0].equals("channel")) {
+                        mPresenter.fetchChannelNameById(youtube_id.split("/")[1]);
+                    } else {
+                        buttonYouTube.setText(youtube_id.split("/")[1]);
+                    }
                 }
                 buttonCreate.setText(getResources().getString(R.string.edit_subscription));
-                buttonInstagram.setText(instagram_id);
-                buttonTwitter.setText(twitter_id);
+                if(!instagram_id.equals("")) {
+                    buttonInstagram.setText(instagram_id);
+                }
+                if(!twitter_id.equals("")) {
+                    buttonTwitter.setText(twitter_id);
+                }
                 editTextName.setText(name);
                 Picasso.with(getApplicationContext())
                         .load(image)

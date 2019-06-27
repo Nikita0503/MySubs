@@ -57,6 +57,7 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
                 mActivity.hideDrawerLayout();
                 //mSelectedIndex = i;
                 notifyDataSetChanged();
+                mActivity.createWallAdapter();
                 mActivity.fetchPosts(mList.get(i));
                 mActivity.showLoading();
             }

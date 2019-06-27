@@ -87,6 +87,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
     private MainPresenter mPresenter;
     private SubscriptionsListAdapter mAdapter;
     private WallListAdapter mWallAdapter;
+    private SubscriptionData mSubscriptionData;
 
     @BindView(R.id.textViewAppName)
     TextView textViewTitle;
@@ -143,10 +144,15 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         mPresenter.fetchSubscriptions();
     }
 
-    public void addPosts(ArrayList<PostData> posts){
+    public void createWallAdapter(){
         mWallAdapter = new WallListAdapter(this);
+        mPresenter.resetToStart();
+        recyclerViewWall.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         recyclerViewWall.setAdapter(mWallAdapter);
         recyclerViewWall.invalidate();
+    }
+
+    public void addPosts(ArrayList<PostData> posts){
         mWallAdapter.addPosts(posts);
     }
 
@@ -186,8 +192,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         mRecyclerViewSideMenu.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
         mRecyclerViewSideMenu.setAdapter(mAdapter);
         mRecyclerViewSideMenu.addItemDecoration(new SpacesItemDecoration(10));
-        recyclerViewWall.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        recyclerViewWall.setAdapter(mWallAdapter);
+        //recyclerViewWall.setAdapter(mWallAdapter);
         mImageViewTwitterIcon = navigationView.findViewById(R.id.imageViewTwitterIcon);
         mImageViewInstagramIcon = navigationView.findViewById(R.id.imageViewInstagramIcon);
         mImageViewYouTubeIcon = navigationView.findViewById(R.id.imageViewYouTubeIcon);
@@ -225,17 +230,18 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         drawer.closeDrawer(Gravity.START, true);
     }
 
-    public void setUser(String userName){
-        mTextViewUserName.setText(userName.split("@")[0]);
-
-    }
-
-
     public void fetchPosts(SubscriptionData subscriptionData){
         textViewTitle.setText(subscriptionData.name);
         mPresenter.fetchYouTubePostsIds(subscriptionData.youtube_id);
         mPresenter.fetchTwitterPostsIds(subscriptionData.twitter_id);
         mPresenter.fetchIdByUsername(subscriptionData.instagram_id);
+        mSubscriptionData = subscriptionData;
+    }
+
+    public void fetchNextPagePosts(){
+        mPresenter.fetchYouTubePostsIds(mSubscriptionData.youtube_id);
+        mPresenter.fetchTwitterPostsIds(mSubscriptionData.twitter_id);
+        mPresenter.fetchIdByUsername(mSubscriptionData.instagram_id);
     }
 
     public void openEditActivity(SubscriptionData subscription){

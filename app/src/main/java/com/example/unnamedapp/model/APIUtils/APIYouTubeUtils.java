@@ -37,11 +37,16 @@ public class APIYouTubeUtils {
     public static final int CHANNEL_NAME = 1;
     private int mType;
     private String mChannel;
+    private String mNextPageToken;
     private GoogleAccountCredential mCredential;
 
     public void setChannel(String channel, int type){
         mChannel = channel;
         mType = type;
+    }
+
+    public void resetToStart(){
+        mNextPageToken = null;
     }
 
     public void setCredential(GoogleAccountCredential credential){
@@ -83,12 +88,23 @@ public class APIYouTubeUtils {
             }
             Log.d("YOUTUBE_DATA", uploadId);
             ArrayList<PostData> postList = new ArrayList<PostData>();
-            PlaylistItemListResponse response = mService.playlistItems()
-                    .list("snippet,contentDetails")
-                    .setPlaylistId(uploadId)
-                    .setMaxResults(10L)
-                    .execute();
+            PlaylistItemListResponse response;
+            if(mNextPageToken == null){
+                response = mService.playlistItems()
+                        .list("snippet,contentDetails")
+                        .setPlaylistId(uploadId)
+                        .setMaxResults(10L)
+                        .execute();
+            }else{
+                response = mService.playlistItems()
+                        .list("snippet,contentDetails")
+                        .setPlaylistId(uploadId)
+                        .setPageToken(mNextPageToken)
+                        .setMaxResults(10L)
+                        .execute();
+            }
             SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            mNextPageToken = response.getNextPageToken();
             List<PlaylistItem> allVideos = response.getItems();
             for(int i = 0; i < allVideos.size(); i++){
                 PlaylistItem item = allVideos.get(i);

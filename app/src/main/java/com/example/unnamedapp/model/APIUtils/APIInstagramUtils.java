@@ -14,6 +14,15 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 public class APIInstagramUtils {
     private static final String BASE_URL = "https://api.instagram.com/v1/";
+    private String mNextPageToken;
+
+    public void setNextPageToken(String nextPageToken) {
+        mNextPageToken = nextPageToken;
+    }
+
+    public void resetToStart(){
+        mNextPageToken = null;
+    }
 
     public Single<InstagramData> getInstagramUserinfo(String accessToken){
         Retrofit retrofit = getClient(BASE_URL);
@@ -30,7 +39,11 @@ public class APIInstagramUtils {
     public Single<ResponseBody> getInstagramPosts(String userId){
         Retrofit retrofit = getClient("https://www.instagram.com/");
         APIService apiService = retrofit.create(APIService.class);
-        return apiService.getInstagramPosts(userId);
+        if(mNextPageToken==null) {
+            return apiService.getInstagramPosts(userId);
+        }else{
+            return apiService.getInstagramPosts(userId, mNextPageToken);
+        }
     }
 
     public static Retrofit getClient(String baseUrl) {
