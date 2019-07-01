@@ -71,6 +71,12 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
                 return true;
             }
         });
+        holder.imageViewEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onCreateDialog(i).show();
+            }
+        });
     }
 
 
@@ -98,7 +104,7 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
                 dialog.cancel();
             }
         });
-        builder.setCancelable(false);
+        //builder.setCancelable(false);
         return builder.create();
     }
 
@@ -111,12 +117,14 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
 
         TextView textViewName;
         ImageView imageViewAvatar;
+        ImageView imageViewEdit;
         ConstraintLayout layout;
 
         public SubscriptionViewHolder(@NonNull View itemView) {
             super(itemView);
             textViewName = (TextView) itemView.findViewById(R.id.textViewSubscriptionName);
             imageViewAvatar = (ImageView) itemView.findViewById(R.id.imageViewSubscriptionAvatar);
+            imageViewEdit = (ImageView) itemView.findViewById(R.id.imageViewEdit);
             layout = (ConstraintLayout) itemView.findViewById(R.id.item_post);
         }
     }
