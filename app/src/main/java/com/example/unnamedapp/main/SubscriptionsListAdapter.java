@@ -57,6 +57,7 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
                 mActivity.hideDrawerLayout();
                 //mSelectedIndex = i;
                 notifyDataSetChanged();
+                mActivity.showWall();
                 mActivity.createWallAdapter();
                 mActivity.fetchPosts(mList.get(i));
                 mActivity.showLoading();
@@ -72,9 +73,6 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
         });
     }
 
-    public void resetSelectedIndex(){
-        notifyDataSetChanged();
-    }
 
     public void addSubscriptions(ArrayList<SubscriptionData> subscriptions){
         mList.clear();

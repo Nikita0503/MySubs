@@ -12,7 +12,9 @@ import android.os.Bundle;
 import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.view.ViewPager;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -82,12 +84,14 @@ import twitter4j.TwitterFactory;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
-public class MainActivity extends YouTubeBaseActivity implements BaseContract.BaseView {
+public class MainActivity extends AppCompatActivity implements BaseContract.BaseView {
 
     private MainPresenter mPresenter;
     private SubscriptionsListAdapter mAdapter;
     private WallListAdapter mWallAdapter;
+    private SocialPagerAdapter mFragmentAdapter;
     private SubscriptionData mSubscriptionData;
+
 
     @BindView(R.id.textViewAppName)
     TextView textViewTitle;
@@ -97,6 +101,10 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
     RecyclerView recyclerViewWall;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
+    @BindView(R.id.social_web_pager)
+    ViewPager mViewPager;
+    @BindView(R.id.social_web_tablayout)
+    TabLayout mTabLayout;
     @BindView(R.id.fab)
     FloatingActionButton floatingActionButton;
     @BindView(R.id.drawer_layout)
@@ -162,9 +170,15 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         floatingActionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "In developing", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
-                mAdapter.resetSelectedIndex();
+                //Snackbar.make(view, "In developing", Snackbar.LENGTH_SHORT)
+                //        .setAction("Action", null).show();
+                if(recyclerViewWall.getVisibility()==View.VISIBLE) {
+                    showSocialWebBrowsers();
+                    hideLoading();
+                }else{
+                    showWall();
+                    hideLoading();
+                }
             }
         });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
@@ -177,7 +191,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
             public void onClick(View v) {
                 Snackbar.make(v, "In developing...", Snackbar.LENGTH_SHORT)
                         .setAction("Action", null).show();
-                mAdapter.resetSelectedIndex();
+
                 hideDrawerLayout();
                 Intent intent = new Intent(MainActivity.this, NewSubscriptionActivity.class);
                 intent.putExtra("token", mPresenter.token);
@@ -187,6 +201,19 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         //recyclerViewWall.swapAdapter(mWallAdapter, true);
         mTextViewUserName = navigationView.findViewById(R.id.textViewName);
         mAdapter = new SubscriptionsListAdapter(getApplicationContext(), this);
+        mFragmentAdapter = new SocialPagerAdapter(getSupportFragmentManager());
+        SocialWebViewFragment instagramWebFragment = new SocialWebViewFragment();
+        instagramWebFragment.setLink("https://www.instagram.com");
+        mFragmentAdapter.addFragment(instagramWebFragment, "Instagram");
+        SocialWebViewFragment twitterWebFragment = new SocialWebViewFragment();
+        twitterWebFragment.setLink("https://www.twitter.com");
+        mFragmentAdapter.addFragment(twitterWebFragment, "Twitter");
+        SocialWebViewFragment youTubeWebFragment = new SocialWebViewFragment();
+        youTubeWebFragment.setLink("https://www.youtube.com");
+        mFragmentAdapter.addFragment(youTubeWebFragment, "YouTube");
+        mViewPager.setOffscreenPageLimit(2);
+        mViewPager.setAdapter(mFragmentAdapter);
+        mTabLayout.setupWithViewPager(mViewPager);
         mWallAdapter = new WallListAdapter(this);
         mRecyclerViewSideMenu = navigationView.findViewById(R.id.recyclerViewSubscriptions);
         mRecyclerViewSideMenu.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
@@ -198,11 +225,24 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         mImageViewYouTubeIcon = navigationView.findViewById(R.id.imageViewYouTubeIcon);
         Sprite doubleBounce = new WanderingCubes();
         progressBar.setIndeterminateDrawable(doubleBounce);
+        showSocialWebBrowsers();
     }
 
     @Override
     public void showMessage(String message){
         Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public void showSocialWebBrowsers(){
+        mTabLayout.setVisibility(View.VISIBLE);
+        mViewPager.setVisibility(View.VISIBLE);
+        recyclerViewWall.setVisibility(View.GONE);
+    }
+
+    public void showWall(){
+        mTabLayout.setVisibility(View.GONE);
+        mViewPager.setVisibility(View.GONE);
+        recyclerViewWall.setVisibility(View.VISIBLE);
     }
 
     public void showYouTubeIcon(){
@@ -279,7 +319,7 @@ public class MainActivity extends YouTubeBaseActivity implements BaseContract.Ba
         if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else {
-            super.onBackPressed();
+            //super.onBackPressed();
         }
     }
 
