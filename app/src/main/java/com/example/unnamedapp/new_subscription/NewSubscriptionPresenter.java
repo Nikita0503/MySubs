@@ -161,6 +161,7 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
     }
 
     public void fetchChannelNameById(String id){
+        Log.d("YOUTUBE_NAME", id);
         APIYouTubeUtils apiYouTubeUtils = new APIYouTubeUtils();
         SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
                 Context.MODE_PRIVATE);

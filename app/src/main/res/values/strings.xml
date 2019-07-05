@@ -62,4 +62,5 @@
     <string name="delete">Delete</string>
     <string name="edit_subscription">Edit subscription</string>
     <string name="not_auth">You must log in to at least one social web</string>
+    <string name="choose_subsription">Choose subscription</string>
 </resources>

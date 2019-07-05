@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -96,6 +97,7 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
         Intent intent = getIntent();
         String token = intent.getStringExtra("token");
         boolean isEditor = intent.getBooleanExtra("editor", false);
+        boolean fromWall = intent.getBooleanExtra("fromWall", false);
         mPresenter = new NewSubscriptionPresenter(this, token);
         mPresenter.onStart();
         if(isEditor){
@@ -106,7 +108,8 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
             String name = intent.getStringExtra("name");
             String image = intent.getStringExtra("image");
             if(!name.equals("")){
-                if(!youtube_id.equals("")) {
+                if(youtube_id != null && !youtube_id.equals("")) {
+                    mPresenter.setYouTubeUser(youtube_id);
                     if (youtube_id.split("/")[0].equals("channel")) {
                         mPresenter.fetchChannelNameById(youtube_id.split("/")[1]);
                     } else {
@@ -114,20 +117,19 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
                     }
                 }
                 buttonCreate.setText(getResources().getString(R.string.edit_subscription));
-                if(!instagram_id.equals("")) {
+                if(instagram_id != null && !instagram_id.equals("")) {
                     buttonInstagram.setText(instagram_id);
+                    mPresenter.setInstagramUser(instagram_id);
                 }
-                if(!twitter_id.equals("")) {
+                if(twitter_id!= null && !twitter_id.equals("")) {
                     buttonTwitter.setText(twitter_id);
+                    mPresenter.setTwitterUser(twitter_id);
                 }
                 editTextName.setText(name);
                 Picasso.with(getApplicationContext())
                         .load(image)
                         .transform(new AvatarTransformation())
                         .into(imageViewAvatar);
-                mPresenter.setInstagramUser(instagram_id);
-                mPresenter.setTwitterUser(twitter_id);
-                mPresenter.setYouTubeUser(youtube_id);
             }
             mPresenter.editor = true;
             mId = id;
@@ -136,6 +138,28 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
                     .load(R.drawable.ic_pudge2)
                     .transform(new AvatarTransformation())
                     .into(imageViewAvatar);
+        }
+        if(fromWall){
+            String instagram_id = intent.getStringExtra("instagram_id");
+            String twitter_id = intent.getStringExtra("twitter_id");
+            String youtube_id = intent.getStringExtra("youtube_id");
+            if(youtube_id!= null) {
+                mPresenter.setYouTubeUser(youtube_id);
+                if (youtube_id.split("/")[0].equals("channel")) {
+                    mPresenter.fetchChannelNameById(youtube_id.split("/")[1]);
+                } else {
+                    buttonYouTube.setText(youtube_id.split("/")[1]);
+                }
+            }
+            buttonCreate.setText(getResources().getString(R.string.edit_subscription));
+            if(instagram_id!= null) {
+                buttonInstagram.setText(instagram_id);
+                mPresenter.setInstagramUser(instagram_id);
+            }
+            if(twitter_id!= null) {
+                buttonTwitter.setText(twitter_id);
+                mPresenter.setTwitterUser(twitter_id);
+            }
         }
     }
 

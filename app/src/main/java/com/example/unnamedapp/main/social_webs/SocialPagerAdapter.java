@@ -1,4 +1,4 @@
-package com.example.unnamedapp.main;
+package com.example.unnamedapp.main.social_webs;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;

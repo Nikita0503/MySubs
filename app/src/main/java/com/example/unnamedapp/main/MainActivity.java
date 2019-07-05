@@ -1,24 +1,16 @@
 package com.example.unnamedapp.main;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.graphics.Rect;
-import android.net.Uri;
-import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
-import android.support.constraint.ConstraintLayout;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
-import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
 import android.support.v4.view.GravityCompat;
@@ -28,61 +20,35 @@ import android.support.v4.widget.DrawerLayout;
 
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.webkit.JavascriptInterface;
-import android.webkit.WebResourceRequest;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.Button;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
+import com.example.unnamedapp.SpacesItemDecoration;
 import com.example.unnamedapp.account_settings.AccountSettingsActivity;
-import com.example.unnamedapp.model.AvatarTransformation;
+import com.example.unnamedapp.main.social_webs.SocialPagerAdapter;
+import com.example.unnamedapp.main.social_webs.SocialWebViewFragmentInstagram;
+import com.example.unnamedapp.main.social_webs.SocialWebViewFragmentTwitter;
+import com.example.unnamedapp.main.social_webs.SocialWebViewFragmentYouTube;
 import com.example.unnamedapp.model.data.PostData;
 import com.example.unnamedapp.model.data.SubscriptionData;
 import com.example.unnamedapp.model.data.UserData;
 import com.example.unnamedapp.new_subscription.NewSubscriptionActivity;
 import com.github.ybq.android.spinkit.sprite.Sprite;
-import com.github.ybq.android.spinkit.style.DoubleBounce;
-import com.github.ybq.android.spinkit.style.FoldingCube;
 import com.github.ybq.android.spinkit.style.WanderingCubes;
-import com.google.android.youtube.player.YouTubeBaseActivity;
 import com.squareup.picasso.Picasso;
-import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.DefaultLogger;
-import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterConfig;
-import com.twitter.sdk.android.core.models.Tweet;
-import com.twitter.sdk.android.tweetui.CompactTweetView;
-import com.twitter.sdk.android.tweetui.TweetUtils;
-import com.twitter.sdk.android.tweetui.TweetView;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
-import java.io.BufferedReader;
-import java.io.InputStreamReader;
-import java.net.MalformedURLException;
-import java.net.URL;
-import java.net.URLConnection;
 import java.util.ArrayList;
-import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
-import twitter4j.Paging;
-import twitter4j.Status;
-import twitter4j.TwitterException;
-import twitter4j.TwitterFactory;
-import twitter4j.conf.Configuration;
-import twitter4j.conf.ConfigurationBuilder;
 
 public class MainActivity extends AppCompatActivity implements BaseContract.BaseView {
 
@@ -92,6 +58,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     private SocialPagerAdapter mFragmentAdapter;
     private SubscriptionData mSubscriptionData;
 
+    private SocialWebViewFragmentInstagram mInstagramWebFragment;
 
     @BindView(R.id.textViewAppName)
     TextView textViewTitle;
@@ -203,14 +170,12 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         mTextViewUserName = navigationView.findViewById(R.id.textViewName);
         mAdapter = new SubscriptionsListAdapter(getApplicationContext(), this);
         mFragmentAdapter = new SocialPagerAdapter(getSupportFragmentManager());
-        SocialWebViewFragment instagramWebFragment = new SocialWebViewFragment();
-        instagramWebFragment.setLink("https://www.instagram.com");
-        mFragmentAdapter.addFragment(instagramWebFragment, "Instagram");
-        SocialWebViewFragment twitterWebFragment = new SocialWebViewFragment();
-        twitterWebFragment.setLink("https://www.twitter.com");
+        mInstagramWebFragment = new SocialWebViewFragmentInstagram();
+        mInstagramWebFragment.setToken(mPresenter.token);
+        mFragmentAdapter.addFragment(mInstagramWebFragment, "Instagram");
+        SocialWebViewFragmentTwitter twitterWebFragment = new SocialWebViewFragmentTwitter();
         mFragmentAdapter.addFragment(twitterWebFragment, "Twitter");
-        SocialWebViewFragment youTubeWebFragment = new SocialWebViewFragment();
-        youTubeWebFragment.setLink("https://www.youtube.com");
+        SocialWebViewFragmentYouTube youTubeWebFragment = new SocialWebViewFragmentYouTube();
         mFragmentAdapter.addFragment(youTubeWebFragment, "YouTube");
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(mFragmentAdapter);
@@ -304,6 +269,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
 
     public void addSubscriptions(ArrayList<SubscriptionData> subs){
         mAdapter.addSubscriptions(subs);
+        mInstagramWebFragment.setSubscriptionList(subs);
     }
 
     public void showLoading(){
@@ -328,22 +294,5 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     public void onStop(){
         super.onStop();
         mPresenter.onStop();
-    }
-
-    public class SpacesItemDecoration extends RecyclerView.ItemDecoration
-    {
-        private int space;
-
-        public SpacesItemDecoration(int space)
-        {
-            this.space = space;
-        }
-
-        @Override
-        public void getItemOffsets(Rect outRect, View view, RecyclerView parent, RecyclerView.State state)
-        {
-            //добавить переданное кол-во пикселей отступа снизу
-            outRect.bottom = space;
-        }
     }
 }
