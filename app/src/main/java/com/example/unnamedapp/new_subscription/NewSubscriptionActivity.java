@@ -1,12 +1,14 @@
 package com.example.unnamedapp.new_subscription;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -151,9 +153,8 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
                     buttonYouTube.setText(youtube_id.split("/")[1]);
                 }
             }
-            buttonCreate.setText(getResources().getString(R.string.edit_subscription));
             if(instagram_id!= null && !instagram_id.equals("")) {
-                buttonInstagram.setText(instagram_id);
+                //buttonInstagram.setText(instagram_id);
                 mPresenter.setInstagramUser(instagram_id);
             }
             if(twitter_id!= null && !twitter_id.equals("")) {
@@ -168,6 +169,10 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
     @Override
     public void initViews() {
         ButterKnife.bind(this);
+    }
+
+    public void setInstagramUser(String user){
+        buttonInstagram.setText(user);
     }
 
     public void setYouTubeChannelName(String name){
@@ -188,6 +193,19 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
         Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_LONG).show();
     }
 
+    public void showMessageAccountIsPrivate(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(getResources().getString(R.string.account_is_private))
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (data == null) {
@@ -203,15 +221,14 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
         }
         if(requestCode == Constants.INSTAGRAM_ID) {
             String user = data.getStringExtra("user");
-            buttonInstagram.setText(user);
             mPresenter.setInstagramUser(user);
-            Toast.makeText(getApplicationContext(), user, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), user, Toast.LENGTH_LONG).show();
         }
         if(requestCode == Constants.TWITTER_ID) {
             String user = data.getStringExtra("user");
             buttonTwitter.setText(user);
             mPresenter.setTwitterUser(user);
-            Toast.makeText(getApplicationContext(), user, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), user, Toast.LENGTH_LONG).show();
         }
         if(requestCode == Constants.YOUTUBE_ID) {
             String user = data.getStringExtra("user");
@@ -221,7 +238,7 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
             }else{
                 buttonYouTube.setText(user.split("/")[1]);
             }
-            Toast.makeText(getApplicationContext(), user, Toast.LENGTH_LONG).show();
+            //Toast.makeText(getApplicationContext(), user, Toast.LENGTH_LONG).show();
         }
     }
 

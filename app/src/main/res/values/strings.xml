@@ -63,4 +63,5 @@
     <string name="edit_subscription">Edit subscription</string>
     <string name="not_auth">You must log in to at least one social web</string>
     <string name="choose_subsription">Choose subscription</string>
+    <string name="account_is_private">Unfortunately, you can not add this user, because account is private</string>
 </resources>

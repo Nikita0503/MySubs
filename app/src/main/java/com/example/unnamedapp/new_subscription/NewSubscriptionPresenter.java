@@ -7,12 +7,16 @@ import android.widget.Toast;
 
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
+import com.example.unnamedapp.model.APIUtils.APIInstagramUtils;
 import com.example.unnamedapp.model.APIUtils.APIUtils;
 import com.example.unnamedapp.model.APIUtils.APIYouTubeUtils;
 import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.SubscriptionData;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.util.ExponentialBackOff;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.util.Arrays;
@@ -26,6 +30,7 @@ import io.reactivex.schedulers.Schedulers;
 import okhttp3.MediaType;
 import okhttp3.MultipartBody;
 import okhttp3.RequestBody;
+import okhttp3.ResponseBody;
 
 public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
 
@@ -53,6 +58,41 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
 
     public void setInstagramUser(String instagramUser){
         mInstagramUser = instagramUser;
+        checkIsPrivateAccount();
+    }
+
+    private void checkIsPrivateAccount(){
+        APIInstagramUtils instagramUtils = new APIInstagramUtils();
+        Disposable check = instagramUtils.getIdByUsername(mInstagramUser)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(new DisposableSingleObserver<ResponseBody>() {
+                    @Override
+                    public void onSuccess(ResponseBody value) {
+                        try {
+                            JSONObject object = new JSONObject(value.string());
+                            JSONObject objectGraphQl = object.getJSONObject("graphql");
+                            JSONObject objectUser = objectGraphQl.getJSONObject("user");
+                            boolean isPrivate = objectUser.getBoolean("is_private");
+                            if(isPrivate){
+                                mActivity.showMessageAccountIsPrivate();
+                                mInstagramUser = "";
+                            }else{
+                                mActivity.setInstagramUser(mInstagramUser);
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+                    @Override
+                    public void onError(Throwable e) {
+                        e.printStackTrace();
+                    }
+                });
+        mDisposable.add(check);
     }
 
     public void setTwitterUser(String twitterUser){

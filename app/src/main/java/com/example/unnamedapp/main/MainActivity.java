@@ -236,6 +236,27 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
                 .into(mImageViewInstagramIcon);
     }
 
+    public void showUnauthorizedYouTubeIcon(){
+        mImageViewYouTubeIcon.setVisibility(View.VISIBLE);
+        Picasso.with(getApplicationContext())
+                .load(R.drawable.ic_youtube_unauthorized)
+                .into(mImageViewYouTubeIcon);
+    }
+
+    public void showUnauthorizedTwitterIcon(){
+        mImageViewTwitterIcon.setVisibility(View.VISIBLE);
+        Picasso.with(getApplicationContext())
+                .load(R.drawable.ic_twitter_unauthorized)
+                .into(mImageViewTwitterIcon);
+    }
+
+    public void showUnauthorizedInstagramIcon(){
+        mImageViewInstagramIcon.setVisibility(View.VISIBLE);
+        Picasso.with(getApplicationContext())
+                .load(R.drawable.ic_instagram_unauthorized)
+                .into(mImageViewInstagramIcon);
+    }
+
     public void hideDrawerLayout(){
         drawer.closeDrawer(Gravity.START, true);
     }

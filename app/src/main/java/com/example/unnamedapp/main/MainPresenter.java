@@ -97,14 +97,20 @@ public class  MainPresenter implements BaseContract.BasePresenter {
             mActivity.showInstagramIcon();
             Log.d("INSTAGRAM", mInstagramToken);
             //fetchInstagramPosts("232192182");
+        }else{
+            mActivity.showUnauthorizedInstagramIcon();
         }
         if(!mTwitterToken.equals("")){
             mActivity.showTwitterIcon();
+        }else{
+            mActivity.showUnauthorizedTwitterIcon();
         }
         if(!mYouTubeToken.equals("")){
             Log.d("YOUTUBE_TOKEN", mYouTubeToken);
             mActivity.showYouTubeIcon();
             //fetchYouTubePostsIds();
+        }else{
+            mActivity.showUnauthorizedYouTubeIcon();
         }
     }
 

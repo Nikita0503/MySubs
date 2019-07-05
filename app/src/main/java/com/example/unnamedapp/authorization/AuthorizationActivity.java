@@ -62,6 +62,7 @@ public class AuthorizationActivity extends AppCompatActivity implements BaseCont
         intent.putExtra("token", token);
         intent.putExtra("email", email);
         startActivity(intent);
+        finish();
     }
 
     @Override
