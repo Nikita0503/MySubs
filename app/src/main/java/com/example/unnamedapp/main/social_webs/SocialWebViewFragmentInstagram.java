@@ -95,8 +95,8 @@ public class SocialWebViewFragmentInstagram extends Fragment{
                         switch (item){
                             case 0:
                                 try {
-                                    Log.d("SPLIT", name);
                                     Intent intent = new Intent(getContext(), NewSubscriptionActivity.class);
+                                    intent.putExtra("token", mToken);
                                     intent.putExtra("fromWall", true);
                                     intent.putExtra("instagram_id", name);
                                     startActivity(intent);

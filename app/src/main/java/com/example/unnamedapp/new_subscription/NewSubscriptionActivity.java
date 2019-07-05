@@ -143,7 +143,7 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
             String instagram_id = intent.getStringExtra("instagram_id");
             String twitter_id = intent.getStringExtra("twitter_id");
             String youtube_id = intent.getStringExtra("youtube_id");
-            if(youtube_id!= null) {
+            if(youtube_id!= null && !youtube_id.equals("")) {
                 mPresenter.setYouTubeUser(youtube_id);
                 if (youtube_id.split("/")[0].equals("channel")) {
                     mPresenter.fetchChannelNameById(youtube_id.split("/")[1]);
@@ -152,11 +152,11 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
                 }
             }
             buttonCreate.setText(getResources().getString(R.string.edit_subscription));
-            if(instagram_id!= null) {
+            if(instagram_id!= null && !instagram_id.equals("")) {
                 buttonInstagram.setText(instagram_id);
                 mPresenter.setInstagramUser(instagram_id);
             }
-            if(twitter_id!= null) {
+            if(twitter_id!= null && !twitter_id.equals("")) {
                 buttonTwitter.setText(twitter_id);
                 mPresenter.setTwitterUser(twitter_id);
             }

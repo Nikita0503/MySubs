@@ -1,7 +1,12 @@
 package com.example.unnamedapp.main.social_webs;
+import android.app.Dialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.support.v7.app.AlertDialog;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -13,9 +18,17 @@ import android.webkit.WebViewClient;
 import android.widget.Button;
 
 import com.example.unnamedapp.R;
+import com.example.unnamedapp.SpacesItemDecoration;
+import com.example.unnamedapp.model.Constants;
+import com.example.unnamedapp.model.data.SubscriptionData;
 import com.example.unnamedapp.new_subscription.NewSubscriptionActivity;
 
+import java.util.ArrayList;
+
 public class SocialWebViewFragmentTwitter extends Fragment{
+
+    private String mToken;
+    private ArrayList<SubscriptionData> mList;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -53,20 +66,63 @@ public class SocialWebViewFragmentTwitter extends Fragment{
         rememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                try {
-                    Log.d("SPLIT", webViewTwitter.getOriginalUrl());
-                    String name = webViewTwitter.getOriginalUrl().split("https://mobile.twitter.com/")[1];
-                    Log.d("SPLIT", name);
-                    Intent intent = new Intent(getContext(), NewSubscriptionActivity.class);
-                    intent.putExtra("fromWall", true);
-                    intent.putExtra("twitter_id", name);
-                    startActivity(intent);
-                }catch (Exception c){
-                    c.printStackTrace();
-                }
+                String name = webViewTwitter.getOriginalUrl().split("https://mobile.twitter.com/")[1];
+                Log.d("SPLIT", name);
+                Dialog dialog = onCreateDialog(name);
+                dialog.show();
             }
         });
         return v;
     }
 
+    public void setToken(String token){
+        mToken = token;
+    }
+
+    public void setSubscriptionList(ArrayList<SubscriptionData> list){
+        mList = list;
+    }
+
+    private Dialog onCreateDialog(final String name) {
+        final String[] choiсe = new  String[]{getResources().getString(R.string.create_new_subscription),
+                getResources().getString(R.string.edit)};
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setItems(choiсe,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int item) {
+                        switch (item){
+                            case 0:
+                                try {
+                                    Intent intent = new Intent(getContext(), NewSubscriptionActivity.class);
+                                    intent.putExtra("token", mToken);
+                                    intent.putExtra("fromWall", true);
+                                    intent.putExtra("twitter_id", name);
+                                    startActivity(intent);
+                                }catch (Exception c){
+                                    c.printStackTrace();
+                                }
+                                break;
+                            case 1:
+                                Dialog chooseDialog = onCreateDialogChooseSub(name);
+                                chooseDialog.show();
+                                break;
+                        }
+                        dialog.cancel();
+                    }
+                });
+        //builder.setCancelable(false);
+        return builder.create();
+    }
+
+    private Dialog onCreateDialogChooseSub(String name){
+        final Dialog dialog = new Dialog(getContext());
+        dialog.setContentView(R.layout.choose_subscription_layout);
+        dialog.setTitle(getResources().getString(R.string.choose_subsription));
+        RecyclerView recyclerViewChoice = (RecyclerView) dialog.findViewById(R.id.recyclerView);
+        ChooseSubscriptionAdapter chooseSubscriptionAdapter = new ChooseSubscriptionAdapter(getContext(), mToken, mList, Constants.TWITTER_ID, name);
+        recyclerViewChoice.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerViewChoice.setAdapter(chooseSubscriptionAdapter);
+        recyclerViewChoice.addItemDecoration(new SpacesItemDecoration(10));
+        return dialog;
+    }
 }

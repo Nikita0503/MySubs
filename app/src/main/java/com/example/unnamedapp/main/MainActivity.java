@@ -59,6 +59,8 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     private SubscriptionData mSubscriptionData;
 
     private SocialWebViewFragmentInstagram mInstagramWebFragment;
+    private SocialWebViewFragmentTwitter mTwitterWebFragment;
+    private SocialWebViewFragmentYouTube mYouTubeWebFragment;
 
     @BindView(R.id.textViewAppName)
     TextView textViewTitle;
@@ -173,10 +175,12 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         mInstagramWebFragment = new SocialWebViewFragmentInstagram();
         mInstagramWebFragment.setToken(mPresenter.token);
         mFragmentAdapter.addFragment(mInstagramWebFragment, "Instagram");
-        SocialWebViewFragmentTwitter twitterWebFragment = new SocialWebViewFragmentTwitter();
-        mFragmentAdapter.addFragment(twitterWebFragment, "Twitter");
-        SocialWebViewFragmentYouTube youTubeWebFragment = new SocialWebViewFragmentYouTube();
-        mFragmentAdapter.addFragment(youTubeWebFragment, "YouTube");
+        mTwitterWebFragment = new SocialWebViewFragmentTwitter();
+        mTwitterWebFragment.setToken(mPresenter.token);
+        mFragmentAdapter.addFragment(mTwitterWebFragment, "Twitter");
+        mYouTubeWebFragment = new SocialWebViewFragmentYouTube();
+        mYouTubeWebFragment.setToken(mPresenter.token);
+        mFragmentAdapter.addFragment(mYouTubeWebFragment, "YouTube");
         mViewPager.setOffscreenPageLimit(2);
         mViewPager.setAdapter(mFragmentAdapter);
         mTabLayout.setupWithViewPager(mViewPager);
@@ -270,6 +274,8 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     public void addSubscriptions(ArrayList<SubscriptionData> subs){
         mAdapter.addSubscriptions(subs);
         mInstagramWebFragment.setSubscriptionList(subs);
+        mTwitterWebFragment.setSubscriptionList(subs);
+        mYouTubeWebFragment.setSubscriptionList(subs);
     }
 
     public void showLoading(){
