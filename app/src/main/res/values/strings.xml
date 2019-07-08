@@ -46,6 +46,7 @@
 
     <string name="remember">Remember</string>
     <string name="choose_a_channel">Select channel, please</string>
+    <string name="choose_a_twitter">Select a user, please</string>
 
     <string name="incorrect_email">Incorrect email</string>
     <string name="incorrect_name">Incorrect name</string>
@@ -64,4 +65,7 @@
     <string name="not_auth">You must log in to at least one social web</string>
     <string name="choose_subsription">Choose subscription</string>
     <string name="account_is_private">Unfortunately, you can not add this user, because account is private</string>
+
+    <string name="authorize_please">For full use of functionality, you have to login at least one social web inside app. (side curtain displays login status in networks)</string>
+    <string name="authorize_browsers">You should login with inside browsers for using functionality of social webs</string>
 </resources>

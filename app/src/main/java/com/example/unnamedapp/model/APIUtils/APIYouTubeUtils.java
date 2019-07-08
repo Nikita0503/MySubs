@@ -59,8 +59,8 @@ public class APIYouTubeUtils {
             com.google.api.services.youtube.YouTube mService = null;
             HttpTransport transport = AndroidHttp.newCompatibleTransport();
             JsonFactory jsonFactory = JacksonFactory.getDefaultInstance();
-            Log.d("YOUTUBE_C", mCredential.getSelectedAccountName());
-            Log.d("YOUTUBE_NAME", mType + " " + mChannel);
+            //Log.d("YOUTUBE_C", mCredential.getSelectedAccountName());
+            //Log.d("YOUTUBE_NAME", mType + " " + mChannel);
             mService = new com.google.api.services.youtube.YouTube.Builder(
                     transport, jsonFactory, mCredential)
                     .setApplicationName("MySubs")
@@ -80,13 +80,13 @@ public class APIYouTubeUtils {
                         .execute();
             }
 
-            Log.d("YOUTUBE_NAME", mType + " " + mChannel);
+            //Log.d("YOUTUBE_NAME", mType + " " + mChannel);
             List<Channel> channels = result.getItems();
             if (channels != null) {
                 Channel channel = channels.get(0);
                 uploadId = channel.getContentDetails().getRelatedPlaylists().getUploads();
             }
-            Log.d("YOUTUBE_DATA", uploadId);
+            //Log.d("YOUTUBE_DATA", uploadId);
             ArrayList<PostData> postList = new ArrayList<PostData>();
             PlaylistItemListResponse response;
             if(mNextPageToken == null){
@@ -103,13 +103,15 @@ public class APIYouTubeUtils {
                         .setMaxResults(10L)
                         .execute();
             }
-            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSX");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
             mNextPageToken = response.getNextPageToken();
             List<PlaylistItem> allVideos = response.getItems();
             for(int i = 0; i < allVideos.size(); i++){
                 PlaylistItem item = allVideos.get(i);
-                Log.d("YOUTUBE_DATA",  item.getSnippet().getPublishedAt().toString());
-                Date date = dateFormat.parse(item.getSnippet().getPublishedAt().toString());
+                String dateStr = item.getSnippet().getPublishedAt().toString();
+                dateStr = dateStr.substring(0, dateStr.length()-5);
+                Log.d("YOUTUBE_DATA",  dateStr);
+                Date date = dateFormat.parse(dateStr);
                 PostData postData = new PostData(Constants.YOUTUBE_ID, item.getSnippet().getResourceId().getVideoId(), date);
                 postData.videoName = item.getSnippet().getTitle();
                 postList.add(postData);

@@ -71,15 +71,15 @@ public class SocialWebViewFragmentYouTube extends Fragment{
                     Log.d("SPLIT", webViewYouTube.getOriginalUrl());
                     String name = webViewYouTube.getOriginalUrl().split("https://m.youtube.com/")[1];
                     Log.d("SPLIT", name);
-                    if(name.split("/")[0].equals("feed")){
+                    if(name.split("/")[0].equals("feed") || name.substring(0, 5).equals("watch")){
                         Toast.makeText(getContext(), getResources().getString(R.string.choose_a_channel), Toast.LENGTH_SHORT).show();
                     }else{
                         Dialog dialog = onCreateDialog(name);
                         dialog.show();
                     }
-
                 }catch (Exception c){
                     c.printStackTrace();
+                    Toast.makeText(getContext(), getResources().getString(R.string.choose_a_channel), Toast.LENGTH_SHORT).show();
                 }
             }
         });

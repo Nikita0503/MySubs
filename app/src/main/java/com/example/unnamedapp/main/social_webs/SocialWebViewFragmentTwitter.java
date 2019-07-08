@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.SpacesItemDecoration;
@@ -66,10 +67,26 @@ public class SocialWebViewFragmentTwitter extends Fragment{
         rememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = webViewTwitter.getOriginalUrl().split("https://mobile.twitter.com/")[1];
-                Log.d("SPLIT", name);
-                Dialog dialog = onCreateDialog(name);
-                dialog.show();
+                try {
+                    String name = webViewTwitter.getOriginalUrl().split("https://mobile.twitter.com/")[1];
+                    if(name.equals("") || name.equals("following") || name.equals("login") || name.equals("signup")
+                            || name.equals("settings/profile") || name.equals("compose/tweet")
+                            || name.equals("explore")|| name.equals("notifications")
+                            || name.equals("messages") || name.contains("search")) {
+                        Toast.makeText(getContext(), getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
+                    }else{
+                        if(name.contains("/")){
+                            name = name.split("/")[0];
+                        }
+                        Log.d("SPLIT", name);
+                        Dialog dialog = onCreateDialog(name);
+                        dialog.show();
+                    }
+
+                }catch (Exception c){
+                    c.printStackTrace();
+                    Toast.makeText(getContext(), getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return v;

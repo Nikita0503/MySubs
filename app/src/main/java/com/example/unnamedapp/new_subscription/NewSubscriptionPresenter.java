@@ -58,7 +58,11 @@ public class NewSubscriptionPresenter implements BaseContract.BasePresenter {
 
     public void setInstagramUser(String instagramUser){
         mInstagramUser = instagramUser;
-        checkIsPrivateAccount();
+        try {
+            checkIsPrivateAccount();
+        }catch (Exception c){
+            Toast.makeText(mActivity, mActivity.getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void checkIsPrivateAccount(){

@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
+import android.widget.Toast;
 
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.SpacesItemDecoration;
@@ -67,11 +68,21 @@ public class SocialWebViewFragmentInstagram extends Fragment{
         rememberButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String name = webViewInstagram.getOriginalUrl().split("https://www.instagram.com/")[1];
-                Log.d("SPLIT", webViewInstagram.getOriginalUrl());
-                name = name.substring(0, name.length() - 1);
-                Dialog dialog = onCreateDialog(name);
-                dialog.show();
+                try {
+                    String name = webViewInstagram.getOriginalUrl().split("https://www.instagram.com/")[1];
+                    if(name.equals("explore/") || name.equals("accounts/") || name.equals("accounts/activity/")
+                    || name.substring(0, 2).equals("p/")){
+                        Toast.makeText(getContext(), getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
+                    }else {
+                        Log.d("SPLIT", webViewInstagram.getOriginalUrl());
+                        name = name.substring(0, name.length() - 1);
+                        Dialog dialog = onCreateDialog(name);
+                        dialog.show();
+                    }
+                } catch (Exception c){
+                    c.printStackTrace();
+                    Toast.makeText(getContext(), getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
+                }
             }
         });
         return v;

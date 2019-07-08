@@ -27,17 +27,21 @@ public class ChooseInstagramActivity extends AppCompatActivity implements BaseCo
     void onClickRemember(){
         try {
             String name = webViewInstagram.getOriginalUrl().split("https://www.instagram.com/")[1];
-            Log.d("SPLIT", webViewInstagram.getOriginalUrl());
-            name = name.substring(0, name.length() - 1);
-            Log.d("SPLIT", name);
-            Intent intent = new Intent();
-            intent.putExtra("user", name);
-            setResult(RESULT_OK, intent);
-            finish();
+            if(name.equals("explore/") || name.equals("accounts/") || name.equals("accounts/activity/")
+                    || name.substring(0, 2).equals("p/")){
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
+            }else {
+                Log.d("SPLIT", webViewInstagram.getOriginalUrl());
+                name = name.substring(0, name.length() - 1);
+                Log.d("SPLIT", name);
+                Intent intent = new Intent();
+                intent.putExtra("user", name);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
         }catch (Exception c){
             c.printStackTrace();
-            setResult(RESULT_CANCELED);
-            finish();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
         }
     }
 

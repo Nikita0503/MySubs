@@ -29,15 +29,24 @@ public class ChooseTwitterActivity extends AppCompatActivity implements BaseCont
         try {
             Log.d("SPLIT", webViewTwitter.getOriginalUrl());
             String name = webViewTwitter.getOriginalUrl().split("https://mobile.twitter.com/")[1];
-            Log.d("SPLIT", name);
-            Intent intent = new Intent();
-            intent.putExtra("user", name);
-            setResult(RESULT_OK, intent);
-            finish();
+            if(name.equals("") || name.equals("following") || name.equals("login") || name.equals("signup")
+                    || name.equals("settings/profile") || name.equals("compose/tweet")
+                    || name.equals("explore")|| name.equals("notifications")
+                    || name.equals("messages") || name.contains("search")) {
+                Toast.makeText(getApplicationContext(), getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
+            }else{
+                if(name.contains("/")){
+                    name = name.split("/")[0];
+                }
+                Log.d("SPLIT", name);
+                Intent intent = new Intent();
+                intent.putExtra("user", name);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
         }catch (Exception c){
             c.printStackTrace();
-            setResult(RESULT_CANCELED);
-            finish();
+            Toast.makeText(getApplicationContext(), getResources().getString(R.string.choose_a_twitter), Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -1,8 +1,11 @@
 package com.example.unnamedapp.main;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.SharedPreferences;
+import android.support.v7.app.AlertDialog;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
@@ -99,11 +102,13 @@ public class  MainPresenter implements BaseContract.BasePresenter {
             //fetchInstagramPosts("232192182");
         }else{
             mActivity.showUnauthorizedInstagramIcon();
+            mNotAuthorizedWebs++;
         }
         if(!mTwitterToken.equals("")){
             mActivity.showTwitterIcon();
         }else{
             mActivity.showUnauthorizedTwitterIcon();
+            mNotAuthorizedWebs++;
         }
         if(!mYouTubeToken.equals("")){
             Log.d("YOUTUBE_TOKEN", mYouTubeToken);
@@ -111,7 +116,31 @@ public class  MainPresenter implements BaseContract.BasePresenter {
             //fetchYouTubePostsIds();
         }else{
             mActivity.showUnauthorizedYouTubeIcon();
+            mNotAuthorizedWebs++;
         }
+        if(mNotAuthorizedWebs == 3){
+            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+            builder.setMessage(mActivity.getResources().getString(R.string.authorize_please))
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                            AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
+                            builder.setMessage(mActivity.getResources().getString(R.string.authorize_browsers))
+                                    .setCancelable(false)
+                                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                                        public void onClick(DialogInterface dialog, int id) {
+                                            dialog.cancel();
+                                        }
+                                    });
+                            AlertDialog alert = builder.create();
+                            alert.show();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
+
     }
 
     public void fetchSubscriptions(){
@@ -165,6 +194,7 @@ public class  MainPresenter implements BaseContract.BasePresenter {
                 .setBackOff(new ExponentialBackOff());
         if(!youtubeToken.equals("")){
             mCredential.setSelectedAccountName(youtubeToken);
+            //Toast.makeText(mActivity, youtubeToken, Toast.LENGTH_LONG).show();
         }else{
             mDownloadedYouTube = true;
             sortPosts();
@@ -198,6 +228,8 @@ public class  MainPresenter implements BaseContract.BasePresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
+                        //Toast.makeText(mActivity, e.getLocalizedMessage(), Toast.LENGTH_LONG).show();
+                        //Toast.makeText(mActivity, e.toString(), Toast.LENGTH_LONG).show();
                     }
                 });
         mDisposable.add(youTubePostsIds);
@@ -379,6 +411,8 @@ public class  MainPresenter implements BaseContract.BasePresenter {
         }
         Collections.reverse(mPosts);
     }
+
+
 
     @Override
     public void onStop() {

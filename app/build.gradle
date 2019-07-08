@@ -15,7 +15,7 @@ android {
         config {
             keyAlias 'key0'
             keyPassword 'CalendarApp1339'
-            storeFile file('calendarAppKeyStore.jks')
+            storeFile file('C:/Users/User/Desktop/calendarAppKeyStore.jks')
             storePassword 'CalendarApp1339'
         }
     }
