@@ -72,4 +72,5 @@
 
     <string name="authorize_please">For full use of functionality, you have to login at least one social web inside app. (side curtain displays login status in networks)</string>
     <string name="authorize_browsers">You should login with inside browsers for using functionality of social webs</string>
+    <string name="no_internet">No Internet connection. Application will not work correctly</string>
 </resources>

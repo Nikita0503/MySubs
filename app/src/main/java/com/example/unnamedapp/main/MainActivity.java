@@ -1,14 +1,19 @@
 package com.example.unnamedapp.main;
 
 import android.Manifest;
+import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Gravity;
@@ -111,6 +116,18 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         initViews();
         String email = intent.getStringExtra("email");
         mTextViewUserName.setText(email.split("@")[0]);
+        if(!isOnline()) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage(getResources().getString(R.string.no_internet))
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            dialog.cancel();
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+        }
     }
 
     @Override
@@ -141,7 +158,7 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
             public void onClick(View view) {
                 //Snackbar.make(view, "In developing", Snackbar.LENGTH_SHORT)
                 //        .setAction("Action", null).show();
-
+                    textViewTitle.setText(getResources().getString(R.string.app_name));
                     showSocialWebBrowsers();
                     hideLoading();
 
@@ -156,8 +173,8 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
         mButtonNewSubscription.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v, "In developing...", Snackbar.LENGTH_SHORT)
-                        .setAction("Action", null).show();
+                //Snackbar.make(v, "In developing...", Snackbar.LENGTH_SHORT)
+                //        .setAction("Action", null).show();
 
                 hideDrawerLayout();
                 Intent intent = new Intent(MainActivity.this, NewSubscriptionActivity.class);
@@ -198,6 +215,16 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
     @Override
     public void showMessage(String message){
         Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
+    }
+
+    public boolean isOnline() {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo netInfo = cm.getActiveNetworkInfo();
+        if (netInfo != null && netInfo.isConnected()) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public void showSocialWebBrowsers(){

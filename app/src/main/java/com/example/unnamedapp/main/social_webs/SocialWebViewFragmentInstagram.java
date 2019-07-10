@@ -2,6 +2,7 @@ package com.example.unnamedapp.main.social_webs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -21,6 +22,7 @@ import android.widget.Toast;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.SpacesItemDecoration;
 import com.example.unnamedapp.main.MainActivity;
+import com.example.unnamedapp.main.WallListAdapter;
 import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.SubscriptionData;
 import com.example.unnamedapp.new_subscription.NewSubscriptionActivity;
@@ -48,6 +50,14 @@ public class SocialWebViewFragmentInstagram extends Fragment{
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.loadUrl("javascript: (function () {" +
+                        "var plus = document. getElementsByClassName ('q02Nz _0TPg') [0] .style.display = 'none';" +
+                        "var header = document. getElementsByClassName ('zGtbP ') [0] .style.display = 'none';" +
+                        "}) ()");
             }
         });
         webViewInstagram.setOnKeyListener(new View.OnKeyListener(){
