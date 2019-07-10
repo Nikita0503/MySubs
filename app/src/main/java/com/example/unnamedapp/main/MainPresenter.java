@@ -2,6 +2,7 @@ package com.example.unnamedapp.main;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -9,6 +10,7 @@ import android.widget.Toast;
 
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
+import com.example.unnamedapp.account_settings.AccountSettingsActivity;
 import com.example.unnamedapp.model.APIUtils.APIInstagramUtils;
 import com.example.unnamedapp.model.APIUtils.APITwitterUtils;
 import com.example.unnamedapp.model.APIUtils.APIUtils;
@@ -131,6 +133,8 @@ public class  MainPresenter implements BaseContract.BasePresenter {
                                     .setPositiveButton("OK", new DialogInterface.OnClickListener() {
                                         public void onClick(DialogInterface dialog, int id) {
                                             dialog.cancel();
+                                            Intent intent = new Intent(mActivity, AccountSettingsActivity.class);
+                                            mActivity.startActivity(intent);
                                         }
                                     });
                             AlertDialog alert = builder.create();

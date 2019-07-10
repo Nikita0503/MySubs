@@ -61,21 +61,14 @@ import pub.devrel.easypermissions.EasyPermissions;
 
 public class AccountSettingsActivity extends AppCompatActivity implements BaseContract.BaseView, EasyPermissions.PermissionCallbacks {
 
-    GoogleAccountCredential mCredential;
-
-
     private AccountSettingsPresenter mPresenter;
 
-    @BindView(R.id.imageViewAvatar)
-    ImageView imageViewAvatar;
     @BindView(R.id.imageViewTwitterUserAvatar)
     ImageView imageViewTwitterUserAvatar;
     @BindView(R.id.imageViewInstagramUserAvatar)
     ImageView imageViewInstagramUserAvatar;
     @BindView(R.id.imageViewYouTubeUserAvatar)
     ImageView imageViewYouTubeUserAvatar;
-    @BindView(R.id.textViewUsername)
-    TextView textViewUsername;
     @BindView(R.id.textViewIsAuthTwitter)
     TextView textViewIsAuthTwitter;
     @BindView(R.id.textViewIsAuthInstagram)
@@ -98,10 +91,7 @@ public class AccountSettingsActivity extends AppCompatActivity implements BaseCo
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_account_settings);
-        Intent intent = getIntent();
-        UserData userData = (UserData) intent.getSerializableExtra("userdata");
         mPresenter = new AccountSettingsPresenter(this);
-        mPresenter.setUserdata(userData);
         initViews();
     }
 
@@ -114,11 +104,6 @@ public class AccountSettingsActivity extends AppCompatActivity implements BaseCo
     @Override
     public void initViews() {
         ButterKnife.bind(this);
-        UserData userData = mPresenter.getUserdata();
-        textViewUsername.setText(userData.name);
-        Picasso.with(getApplicationContext())
-                .load(userData.avatar)
-                .into(imageViewAvatar);
     }
 
     @Override

@@ -67,7 +67,7 @@ public class AuthorizationActivity extends AppCompatActivity implements BaseCont
 
     @Override
     public void showMessage(String message){
-        Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(getWindow().getDecorView().getRootView(), message, Snackbar.LENGTH_LONG).show();
     }
 
     @Override

@@ -141,13 +141,10 @@ public class MainActivity extends AppCompatActivity implements BaseContract.Base
             public void onClick(View view) {
                 //Snackbar.make(view, "In developing", Snackbar.LENGTH_SHORT)
                 //        .setAction("Action", null).show();
-                if(recyclerViewWall.getVisibility()==View.VISIBLE) {
+
                     showSocialWebBrowsers();
                     hideLoading();
-                }else{
-                    showWall();
-                    hideLoading();
-                }
+
             }
         });
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(

@@ -89,7 +89,7 @@ public class AuthorizationPresenter implements BaseContract.BasePresenter {
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        mActivity.showMessage("fail");
+                        mActivity.showMessage(mActivity.getResources().getString(R.string.user_not_found));
                     }
                 });
         mDisposable.add(token);

@@ -53,6 +53,9 @@
     <string name="incorrect_password">Incorrect password</string>
     <string name="incorrect_repeated_password">Incorrect repeated password</string>
     <string name="not_the_same_passwords">Passwords are not the same</string>
+    <string name="success_registration">You have successfully registered</string>
+    <string name="fail_registration">Something went wrong, try again later</string>
+    <string name="password_should_be">Password should be more than 6 symbols</string>
 
     <string name="facebook_app_id">2812953778721714</string>
 
@@ -65,6 +68,7 @@
     <string name="not_auth">You must log in to at least one social web</string>
     <string name="choose_subsription">Choose subscription</string>
     <string name="account_is_private">Unfortunately, you can not add this user, because account is private</string>
+    <string name="user_not_found">This user does not exist. Carefully enter your username and password</string>
 
     <string name="authorize_please">For full use of functionality, you have to login at least one social web inside app. (side curtain displays login status in networks)</string>
     <string name="authorize_browsers">You should login with inside browsers for using functionality of social webs</string>

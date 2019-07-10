@@ -9,16 +9,16 @@
 
     <EditText
         android:id="@+id/editTextEmail"
-        android:layout_width="220dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:backgroundTint="@android:color/white"
         android:ems="10"
-        android:paddingEnd="20dp"
         android:gravity="end"
         android:hint="@string/email"
         android:inputType="textPersonName"
+        android:paddingEnd="20dp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/editTextPassword"
@@ -26,33 +26,20 @@
 
     <EditText
         android:id="@+id/editTextPassword"
-        android:layout_width="220dp"
+        android:layout_width="320dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:backgroundTint="@android:color/white"
         android:ems="10"
-        android:paddingEnd="20dp"
         android:gravity="end"
         android:hint="@string/password"
         android:inputType="textPassword"
+        android:paddingEnd="20dp"
         android:textColor="@android:color/white"
         android:textColorHint="@android:color/white"
         app:layout_constraintBottom_toTopOf="@+id/buttonSignIn"
         app:layout_constraintEnd_toEndOf="parent" />
-
-    <ImageView
-        android:id="@+id/imageViewLogo"
-        android:layout_width="250dp"
-        android:layout_height="250dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="40dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:srcCompat="@drawable/ic_pudge2" />
 
     <TextView
         android:id="@+id/textView"
@@ -61,12 +48,14 @@
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/app_name"
-        android:textSize="30dp"
         android:textColor="@android:color/white"
+        android:textSize="48dp"
+        app:layout_constraintBottom_toTopOf="@+id/editTextEmail"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewLogo" />
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/buttonSignIn"

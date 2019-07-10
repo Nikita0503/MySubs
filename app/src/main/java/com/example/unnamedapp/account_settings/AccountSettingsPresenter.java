@@ -47,8 +47,6 @@ import io.reactivex.schedulers.Schedulers;
 import pub.devrel.easypermissions.EasyPermissions;
 
 public class AccountSettingsPresenter implements BaseContract.BasePresenter {
-
-    private UserData mUserdata;
     public GoogleAccountCredential mCredential;
     public TwitterAuthClient twitterAuthClient;
     public APIInstagramUtils mAPIInstagramUtils;
@@ -65,14 +63,6 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
         youTubeInit();
         twitterInit();
         instagramInit();
-    }
-
-    public UserData getUserdata() {
-        return mUserdata;
-    }
-
-    public void setUserdata(UserData userdata) {
-        mUserdata = userdata;
     }
 
     public void youTubeInit(){

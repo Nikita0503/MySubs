@@ -47,10 +47,17 @@ public class SubscriptionsListAdapter extends RecyclerView.Adapter {
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder viewHolder, final int i) {
         SubscriptionViewHolder holder = (SubscriptionViewHolder) viewHolder;
         holder.textViewName.setText(mList.get(i).name);
-        Picasso.with(mContext)
-                .load(mList.get(i).image)
-                .transform(new AvatarTransformation())
-                .into(holder.imageViewAvatar);
+        if(mList.get(i).image == null) {
+            Picasso.with(mContext)
+                    .load(R.drawable.default_photo)
+                    .transform(new AvatarTransformation())
+                    .into(holder.imageViewAvatar);
+        }else{
+            Picasso.with(mContext)
+                    .load(mList.get(i).image)
+                    .transform(new AvatarTransformation())
+                    .into(holder.imageViewAvatar);
+        }
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

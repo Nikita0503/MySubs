@@ -66,6 +66,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="@+id/nav_view"
         app:layout_constraintTop_toTopOf="parent"
+        android:visibility="gone"
         app:srcCompat="@drawable/side" />
 
     <com.github.ybq.android.spinkit.SpinKitView xmlns:app="http://schemas.android.com/apk/res-auto"

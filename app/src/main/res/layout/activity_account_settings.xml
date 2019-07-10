@@ -24,7 +24,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:src="@drawable/ic_instagram"
-        app:layout_constraintBottom_toTopOf="@+id/buttonPrivacyPolicy"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
     <ImageView
@@ -36,30 +36,6 @@
         app:layout_constraintBottom_toTopOf="@+id/imageViewTwitter"
         app:layout_constraintEnd_toEndOf="parent"
         app:srcCompat="@drawable/ic_youtube" />
-
-    <ImageView
-        android:id="@+id/imageViewAvatar"
-        android:layout_width="180dp"
-        android:layout_height="180dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewUsername"
-        app:srcCompat="@drawable/ic_pudge2" />
-
-    <TextView
-        android:id="@+id/textViewUsername"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="16dp"
-        android:gravity="center"
-        android:textSize="32dp"
-        android:text="Username"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewIsAuthTwitter"
@@ -99,44 +75,6 @@
         app:layout_constraintEnd_toStartOf="@+id/imageViewYouTube"
         app:layout_constraintTop_toTopOf="@+id/imageViewYouTube"
         app:layout_constraintVertical_bias="0.529" />
-
-    <Button
-        android:id="@+id/buttonChangeName"
-        android:layout_width="0dp"
-        android:layout_height="50dp"
-        android:layout_marginTop="8dp"
-        android:background="#766a65"
-        android:text="@string/change_name"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="@+id/imageViewAvatar"
-        app:layout_constraintStart_toStartOf="@+id/imageViewAvatar"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewAvatar" />
-
-    <Button
-        android:id="@+id/buttonChangePassword"
-        android:layout_width="0dp"
-        android:layout_height="40dp"
-        android:layout_marginTop="8dp"
-        android:background="#766a65"
-        android:text="@string/change_password"
-        android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="@+id/buttonChangeName"
-        app:layout_constraintStart_toStartOf="@+id/buttonChangeName"
-        app:layout_constraintTop_toBottomOf="@+id/buttonChangeName" />
-
-    <Button
-        android:id="@+id/buttonPrivacyPolicy"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
-        android:text="@string/privacy_policy"
-        android:background="#766a65"
-        android:textColor="@android:color/white"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <ImageView
         android:id="@+id/imageViewTwitterUserAvatar"

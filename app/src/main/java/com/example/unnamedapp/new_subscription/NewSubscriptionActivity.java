@@ -128,18 +128,20 @@ public class NewSubscriptionActivity extends AppCompatActivity implements BaseCo
                     mPresenter.setTwitterUser(twitter_id);
                 }
                 editTextName.setText(name);
-                Picasso.with(getApplicationContext())
-                        .load(image)
-                        .transform(new AvatarTransformation())
-                        .into(imageViewAvatar);
+                if(image!=null) {
+                    Picasso.with(getApplicationContext())
+                            .load(image)
+                            .transform(new AvatarTransformation())
+                            .into(imageViewAvatar);
+                }else{
+                    Picasso.with(getApplicationContext())
+                            .load(R.drawable.choose_photo)
+                            .transform(new AvatarTransformation())
+                            .into(imageViewAvatar);
+                }
             }
             mPresenter.editor = true;
             mId = id;
-        }else {
-            Picasso.with(getApplicationContext())
-                    .load(R.drawable.ic_pudge2)
-                    .transform(new AvatarTransformation())
-                    .into(imageViewAvatar);
         }
         if(fromWall){
             String instagram_id = intent.getStringExtra("instagram_id");

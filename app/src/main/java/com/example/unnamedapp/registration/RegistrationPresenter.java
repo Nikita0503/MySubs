@@ -52,6 +52,14 @@ public class RegistrationPresenter implements BaseContract.BasePresenter {
             mActivity.showMessage(mActivity.getResources().getString(R.string.not_the_same_passwords));
             return;
         }
+        if(!email.contains("@")){
+            mActivity.showMessage(mActivity.getResources().getString(R.string.incorrect_email));
+            return;
+        }
+        if(password.length()<6){
+            mActivity.showMessage(mActivity.getResources().getString(R.string.password_should_be));
+            return;
+        }
         RegistrationData data = new RegistrationData(email, name, password);
         Disposable register = mApiUtils.registerNewUser(data)
                 .subscribeOn(Schedulers.io())
@@ -59,14 +67,14 @@ public class RegistrationPresenter implements BaseContract.BasePresenter {
                 .subscribeWith(new DisposableCompletableObserver() {
                     @Override
                     public void onComplete() {
-                        mActivity.showMessage("success");
+                        mActivity.showMessage(mActivity.getResources().getString(R.string.success_registration));
                         mActivity.finish();
                     }
 
                     @Override
                     public void onError(Throwable e) {
                         e.printStackTrace();
-                        mActivity.showMessage("fail");
+                        mActivity.showMessage(mActivity.getResources().getString(R.string.fail_registration));
                     }
                 });
         mDisposable.add(register);
