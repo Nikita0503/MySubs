@@ -2,6 +2,7 @@ package com.example.unnamedapp.main.social_webs;
 import android.app.Dialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +14,9 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.ValueCallback;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -48,6 +52,14 @@ public class SocialWebViewFragmentYouTube extends Fragment{
                 view.loadUrl(url);
                 return true;
             }
+
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                onCreateDialogError();
+            }
+
+
         });
         webViewYouTube.setOnKeyListener(new View.OnKeyListener(){
 
@@ -92,6 +104,20 @@ public class SocialWebViewFragmentYouTube extends Fragment{
 
     public void setSubscriptionList(ArrayList<SubscriptionData> list){
         mList = list;
+    }
+
+    private Dialog onCreateDialogError(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(getResources().getString(R.string.no_internet))
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+        return alert;
     }
 
     private Dialog onCreateDialog(final String name) {

@@ -13,6 +13,8 @@ import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.webkit.WebResourceError;
+import android.webkit.WebResourceRequest;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.Button;
@@ -47,6 +49,11 @@ public class SocialWebViewFragmentTwitter extends Fragment{
             public boolean shouldOverrideUrlLoading(WebView view, String url) {
                 view.loadUrl(url);
                 return true;
+            }
+            @Override
+            public void onReceivedError(WebView view, WebResourceRequest request, WebResourceError error) {
+                super.onReceivedError(view, request, error);
+                onCreateDialogError();
             }
         });
         webViewTwitter.setOnKeyListener(new View.OnKeyListener(){
@@ -98,6 +105,20 @@ public class SocialWebViewFragmentTwitter extends Fragment{
 
     public void setSubscriptionList(ArrayList<SubscriptionData> list){
         mList = list;
+    }
+
+    private Dialog onCreateDialogError(){
+        AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
+        builder.setMessage(getResources().getString(R.string.no_internet))
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        dialog.cancel();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+        return alert;
     }
 
     private Dialog onCreateDialog(final String name) {
