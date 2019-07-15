@@ -77,7 +77,7 @@ public class APIYouTubeUtils {
                  result = mService.channels().list("contentDetails")
                         .setFields("items/contentDetails/relatedPlaylists/uploads")
                         .setForUsername(mChannel)
-                        .execute();
+                            .execute();
             }
 
             //Log.d("YOUTUBE_NAME", mType + " " + mChannel);

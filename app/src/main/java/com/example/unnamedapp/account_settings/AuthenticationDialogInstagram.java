@@ -13,7 +13,7 @@ import android.webkit.WebViewClient;
 
 import com.example.unnamedapp.R;
 
-public class AuthenticationDialog extends Dialog {
+public class AuthenticationDialogInstagram extends Dialog {
     private Context mContext;
     private WebView mWebView;
     private AccountSettingsPresenter mPresenter;
@@ -21,7 +21,7 @@ public class AuthenticationDialog extends Dialog {
     private String mUrl;
 
 
-    public AuthenticationDialog(@NonNull Context context, AccountSettingsPresenter presenter) {
+    public AuthenticationDialogInstagram(@NonNull Context context, AccountSettingsPresenter presenter) {
         super(context);
         mContext = context;
         mUrl = "https://api.instagram.com/oauth/authorize/?client_id=f49bcb3f92a34eb784f6aef6c3e5790c&redirect_uri=http://localhost/&response_type=token";
@@ -31,13 +31,14 @@ public class AuthenticationDialog extends Dialog {
     @Override
     protected void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
-        this.setContentView(R.layout.auth_instagram_dialog);
+        this.setContentView(R.layout.auth_dialog);
         initializeWebView();
     }
 
     private void initializeWebView(){
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.getSettings().setJavaScriptEnabled(true);
+        //mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.setVerticalScrollBarEnabled(true);
         mWebView.setHorizontalScrollBarEnabled(true);
         mWebView.loadUrl(mUrl);

@@ -1,8 +1,6 @@
 package com.example.unnamedapp.account_settings;
 
-import android.Manifest;
 import android.accounts.AccountManager;
-import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -11,22 +9,13 @@ import android.util.Log;
 import com.example.unnamedapp.BaseContract;
 import com.example.unnamedapp.R;
 import com.example.unnamedapp.model.APIUtils.APIInstagramUtils;
-import com.example.unnamedapp.model.APIUtils.APIYouTubeUtils;
 import com.example.unnamedapp.model.Constants;
 import com.example.unnamedapp.model.data.UserData;
 import com.example.unnamedapp.model.data.instagram.InstagramData;
 import com.example.unnamedapp.model.data.instagram.InstagramUserdata;
-import com.google.android.gms.auth.api.signin.GoogleSignIn;
-import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
-import com.google.android.gms.auth.api.signin.GoogleSignInClient;
-import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
-import com.google.android.gms.common.api.ApiException;
-import com.google.android.gms.tasks.Task;
 import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccountCredential;
 import com.google.api.client.util.ExponentialBackOff;
-import com.google.api.services.youtube.YouTubeScopes;
 import com.twitter.sdk.android.core.Callback;
-import com.twitter.sdk.android.core.DefaultLogger;
 import com.twitter.sdk.android.core.Result;
 import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
@@ -44,7 +33,7 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
-import pub.devrel.easypermissions.EasyPermissions;
+import twitter4j.auth.RequestToken;
 
 public class AccountSettingsPresenter implements BaseContract.BasePresenter {
     public GoogleAccountCredential mCredential;
@@ -111,33 +100,40 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
                 .debug(true)
                 .build();
         Twitter.initialize(config);
-        TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        if(twitterSession != null){
-            Log.d("twitter", twitterSession.getUserName());
-            fetchTwitterUserData();
-        }else{
-            Log.d("twitter", "null");
-            mActivity.showTwitterUser(null);
-        }
+
+        //TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
+        //if(twitterSession != null){
+        //    Log.d("twitter", twitterSession.getUserName());
+        //    fetchTwitterUserData();
+        //}else{
+        //    Log.d("twitter", "null");
+        //    mActivity.showTwitterUser(null);
+        //}
+
     }
 
     public void twitterLogin(){
-        twitterAuthClient = new TwitterAuthClient();
-        twitterAuthClient.authorize(mActivity, new Callback<TwitterSession>() {
-            @Override
-            public void success(Result<TwitterSession> result) {
-                fetchTwitterUserData();
-                SharedPreferences activityPreferences = mActivity.getSharedPreferences("UnnamedApplication", Activity.MODE_PRIVATE);
-                SharedPreferences.Editor editor = activityPreferences.edit();
-                editor.putString("TwitterToken", "exist");
-                editor.commit();
-            }
+        AuthenticationDialogTwitter dialog = new AuthenticationDialogTwitter(mActivity, this);
+        dialog.setCancelable(true);
+        dialog.show();
+        //twitterAuthClient = new TwitterAuthClient();
+        //twitterAuthClient.authorize(mActivity, new Callback<TwitterSession>() {
+        //    @Override
+        //    public void success(Result<TwitterSession> result) {
+        //       fetchTwitterUserData();
+        //        SharedPreferences activityPreferences = mActivity.getSharedPreferences("UnnamedApplication", Activity.MODE_PRIVATE);
+        //        SharedPreferences.Editor editor = activityPreferences.edit();
+        //        editor.putString("TwitterToken", "exist");
+        //        editor.commit();
+        //    }
+        //
+        //    @Override
+        //    public void failure(TwitterException exception) {
+        //        exception.printStackTrace();
+        //    }
+        //});
 
-            @Override
-            public void failure(TwitterException exception) {
-                exception.printStackTrace();
-            }
-        });
+
     }
 
     private void fetchTwitterUserData(){
@@ -172,7 +168,7 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
     }
 
     public void instagramLogin(){
-        AuthenticationDialog dialog = new AuthenticationDialog(mActivity, this);
+        AuthenticationDialogInstagram dialog = new AuthenticationDialogInstagram(mActivity, this);
         dialog.setCancelable(true);
         dialog.show();
     }
