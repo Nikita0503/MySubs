@@ -31,12 +31,10 @@ public class AuthenticationDialogTwitter extends Dialog {
     private WebView mWebView;
     private AccountSettingsPresenter mPresenter;
     private Context mContext;
-    private String mUrl;
 
 
     public AuthenticationDialogTwitter(@NonNull Context context, AccountSettingsPresenter presenter) {
         super(context);
-        mUrl = "https://www.twitter.com";
         mPresenter = presenter;
         mContext = context;
         twitter = new TwitterFactory().getInstance();
@@ -54,22 +52,15 @@ public class AuthenticationDialogTwitter extends Dialog {
     private void initializeWebView(){
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        //mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.setVerticalScrollBarEnabled(true);
         mWebView.setHorizontalScrollBarEnabled(true);
-        //mWebView.loadUrl(mUrl);
         new TokenGet().execute();
     }
-
-
-
-
 
 
     private class TokenGet extends AsyncTask<String, String, String> {
         @Override
         protected String doInBackground(String... args) {
-            //получаем токен и юрл для запросов
             try {
                 requestToken = twitter.getOAuthRequestToken();
                 oauth_url = requestToken.getAuthorizationURL();
@@ -78,16 +69,12 @@ public class AuthenticationDialogTwitter extends Dialog {
             }
             return oauth_url;
         }
-
         @Override
         protected void onPostExecute(String oauth_url) {
             // запускаем диалог с вебвью
             if(oauth_url != null){
                 mWebView.loadUrl(oauth_url);
                 mWebView.setWebViewClient(new WebViewClient() {
-
-                    //если уже до этого логинились то показываем экран не с полями для ввода,
-                    // а просто кнопку авторизироваться
                     boolean authComplete = false;
 
                     @Override
@@ -95,14 +82,11 @@ public class AuthenticationDialogTwitter extends Dialog {
                         super.onPageStarted(view, url, favicon);
                     }
 
-                    //закрываем диалог после получения ответа "ок"
                     @Override
                     public void onPageFinished(WebView view, String url) {
                         super.onPageFinished(view, url);
-                        //если все ок то авторизируем и закрываем диалог если все плохо
-                        // и запрос не верный, или пароль или нет инета или что то еще
-                        //тогда закрываем диалог и тихо истерим
                         if (url.contains("oauth_verifier") && authComplete == false){
+                            dismiss();
                             authComplete = true;
                             Uri uri = Uri.parse(url);
                             oauth_verifier = uri.getQueryParameter("oauth_verifier");
@@ -112,81 +96,47 @@ public class AuthenticationDialogTwitter extends Dialog {
                             SharedPreferences.Editor editor = activityPreferences.edit();
                             editor.putString("TwitterToken", access_token);
                             editor.commit();
-                            dismiss();
-                            //new AccessTokenGet().execute();
-                        } else if(url.contains("denied")){
-                            //auth_dialog.dismiss();
-                            Log.d("TWITTER_WEB", "Sorry !, Permission Denied");
+
+                            new AccessTokenGet().execute();
+
                         }
                     }
                 });
 
-            }else{
-                Log.d("TWITTER_WEB", "Sorry !, Network Error or Invalid Credentials");
             }
         }
     }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    //а в этом потоке мы создаем запрос к апи на получение данных
     private class AccessTokenGet extends AsyncTask<String, String, Boolean> {
-
-        // создаем и показываем загрузочный прогрес диалог
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
 
         }
-
-        // по полученым токену в потоке выше иы получаем возможность
-        // получить данные поюзеру, его ися его аватарку и т д.
         @Override
         protected Boolean doInBackground(String... args) {
             try {
                 accessToken = twitter.getOAuthAccessToken(requestToken, oauth_verifier);
-
-                //получаем данные по юзеру
                 User user = twitter.showUser(accessToken.getUserId());
-                // говнокод так не делайте потому что я это делал для примера и решил что мне можно)
-                // но вообще лучше сохранить в преференсы или передать на другой экран или еще что то
-                // для примера прокатит. А сделал я так потому что работа с UI в этом потоке запрещена
-                //вся работа с ui должна быть в главном потоке
-                //nameText = user.getName();
+                SharedPreferences activityPreferences = mContext.getSharedPreferences("UnnamedApplication", Activity.MODE_PRIVATE);
+                SharedPreferences.Editor editor = activityPreferences.edit();
+                editor.putString("TwitterName", user.getName());
+                editor.putString("TwitterImage", user.getOriginalProfileImageURL());
+                editor.commit();
 
-                //runOnUiThread(new Runnable(){
-                //    @Override
-                //    public void run(){
-                //        //name.setText(nameText);
-                //    }
-                //});
-            } catch (TwitterException e) {
+
+            } catch (Exception e) {
                 e.printStackTrace();
             }
+
             return true;
         }
 
-        //прячем загрузочный диалог
-        //здесь например можно сделать переход на следующий экран после окончания загрузки
-        // данных из твиттера, или еще что то что вам хочется.
         @Override
         protected void onPostExecute(Boolean response) {
-            if(response){
-               // progress.hide();
-            }
+            mPresenter.fetchTwitterUserData();
+
         }
     }
 }

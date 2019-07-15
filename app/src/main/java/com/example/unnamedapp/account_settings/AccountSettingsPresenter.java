@@ -17,7 +17,6 @@ import com.google.api.client.googleapis.extensions.android.gms.auth.GoogleAccoun
 import com.google.api.client.util.ExponentialBackOff;
 import com.twitter.sdk.android.core.Callback;
 import com.twitter.sdk.android.core.Result;
-import com.twitter.sdk.android.core.Twitter;
 import com.twitter.sdk.android.core.TwitterAuthConfig;
 import com.twitter.sdk.android.core.TwitterConfig;
 import com.twitter.sdk.android.core.TwitterCore;
@@ -33,6 +32,9 @@ import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.disposables.Disposable;
 import io.reactivex.observers.DisposableSingleObserver;
 import io.reactivex.schedulers.Schedulers;
+import twitter4j.Twitter;
+import twitter4j.TwitterFactory;
+import twitter4j.auth.AccessToken;
 import twitter4j.auth.RequestToken;
 
 public class AccountSettingsPresenter implements BaseContract.BasePresenter {
@@ -95,64 +97,29 @@ public class AccountSettingsPresenter implements BaseContract.BasePresenter {
     }
 
     private void twitterInit(){
-        TwitterConfig config = new TwitterConfig.Builder(mActivity)
-                .twitterAuthConfig(new TwitterAuthConfig(mActivity.getResources().getString(R.string.twitter_consumer_key), mActivity.getResources().getString(R.string.twitter_consumer_secret)))
-                .debug(true)
-                .build();
-        Twitter.initialize(config);
-
-        //TwitterSession twitterSession = TwitterCore.getInstance().getSessionManager().getActiveSession();
-        //if(twitterSession != null){
-        //    Log.d("twitter", twitterSession.getUserName());
-        //    fetchTwitterUserData();
-        //}else{
-        //    Log.d("twitter", "null");
-        //    mActivity.showTwitterUser(null);
-        //}
-
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String token = sp.getString("TwitterToken", "");
+        if(!token.equals("")){
+            fetchTwitterUserData();
+        }else{
+            mActivity.showTwitterUser(null);
+        }
     }
 
     public void twitterLogin(){
         AuthenticationDialogTwitter dialog = new AuthenticationDialogTwitter(mActivity, this);
         dialog.setCancelable(true);
         dialog.show();
-        //twitterAuthClient = new TwitterAuthClient();
-        //twitterAuthClient.authorize(mActivity, new Callback<TwitterSession>() {
-        //    @Override
-        //    public void success(Result<TwitterSession> result) {
-        //       fetchTwitterUserData();
-        //        SharedPreferences activityPreferences = mActivity.getSharedPreferences("UnnamedApplication", Activity.MODE_PRIVATE);
-        //        SharedPreferences.Editor editor = activityPreferences.edit();
-        //        editor.putString("TwitterToken", "exist");
-        //        editor.commit();
-        //    }
-        //
-        //    @Override
-        //    public void failure(TwitterException exception) {
-        //        exception.printStackTrace();
-        //    }
-        //});
-
-
     }
 
-    private void fetchTwitterUserData(){
-        TwitterCore.getInstance().getApiClient().getAccountService().verifyCredentials(true, false, true).enqueue(new Callback<User>() {
-            @Override
-            public void success(Result<User> userResult) {
-                try {
-                    User user = userResult.data;
-                    mActivity.showTwitterUser(new UserData(user.name, user.profileImageUrl));
 
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-            }
-            @Override
-            public void failure(TwitterException e) {
-                e.printStackTrace();
-            }
-        });
+    public void fetchTwitterUserData(){
+        SharedPreferences sp = mActivity.getSharedPreferences("UnnamedApplication",
+                Context.MODE_PRIVATE);
+        String name = sp.getString("TwitterName", "");
+        String image = sp.getString("TwitterImage", "");
+        mActivity.showTwitterUser(new UserData(name, image));
     }
 
     public void instagramInit(){

@@ -38,7 +38,6 @@ public class AuthenticationDialogInstagram extends Dialog {
     private void initializeWebView(){
         mWebView = (WebView) findViewById(R.id.webView);
         mWebView.getSettings().setJavaScriptEnabled(true);
-        //mWebView.getSettings().setDomStorageEnabled(true);
         mWebView.setVerticalScrollBarEnabled(true);
         mWebView.setHorizontalScrollBarEnabled(true);
         mWebView.loadUrl(mUrl);
